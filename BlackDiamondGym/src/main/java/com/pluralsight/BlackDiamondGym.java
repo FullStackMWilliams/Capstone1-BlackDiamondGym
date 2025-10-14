@@ -28,7 +28,7 @@ public class BlackDiamondGym {
         // clearScreen();
 
         System.out.println(BeigeBackground + "================================="+ RESET);
-        System.out.println(Purple + " Welcome to BlackDiamond Gym" + RESET);
+        System.out.println(DeepBlue + " Welcome to BlackDiamond Gym" + RESET);
         System.out.println(BeigeBackground + "=================================" + RESET);
         System.out.println(Seafoam + "\nYour journey to strength and balance begins here." + RESET);
         System.out.println(Gray + "\n-----------------------------------------------------" + RESET);
