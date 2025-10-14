@@ -1,6 +1,6 @@
 package com.pluralsight;
 
-/* BLACK DIAMOND GYM */
+                                          /* BLACK DIAMOND GYM */
 
 
 public class BlackDiamondGym {
