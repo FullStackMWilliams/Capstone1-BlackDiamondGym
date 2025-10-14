@@ -83,6 +83,28 @@ public class Membership {
         if (list != null) this.addOns.addAll(list);
     }
 
+    public void addAddOn (String addOn){
+        if (!addOns.contains(addOn)) addOns.add(addOn);
+    }
+    public void removeAddon(String addOn) {
+        addOns.remove(addOn);
+    }
+    public void cancel() {
+        status = "CANCELED";
+    }
+    public void activate() {
+        status = "Active";
+    }
+
+    public double getTotalPrice() {
+        double total = plan.getPrice();
+        for (String a : addOns) total += getADDonPrice(a);
+        return total;
+    }
+    public static String addOnsToString(List<String> addOns) {
+        if (addOns == null || addOns.isEmpty()) return "";
+        return String.join(";",addOns);
+    }
     public static List<String> parseAddOns(String addOnString) {
         List<String> list = new ArrayList<>();
         if (addOnString == null || addOnString.trim().isEmpty()) return list;
@@ -92,6 +114,10 @@ public class Membership {
             if (!clean.isEmpty()) list.add(clean);
         }
         return list;
+    }
+    @Override
+    public String toString() {
+        return plan + " | add-ons: " + addOns + " status: " + status + " | total: $" + String.format("%.2f",getTotalPrice());
     }
 
 }
