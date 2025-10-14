@@ -1,4 +1,5 @@
 package com.pluralsight;
+import java.util.Scanner;
 
                              /* BLACK DIAMOND GYM */
 
