@@ -2,8 +2,6 @@ package com.pluralsight;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.stream.Collector;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -54,5 +52,26 @@ public class Ledger {
                 .filter(t -> (t.getDate().isEqual(start) || t.getDate().isAfter(start)) && (t.getDate().isEqual(end) || t.getDate().isBefore(end)))
                 .collect(Collectors.toList());
     }
+    // Capstone Accounting ledger code
+    public List<Transaction> monthToDate() {
+        YearMonth ym = YearMonth.now();
+        LocalDate start = ym.atDay(1);
+        LocalDate end = LocalDate.now();
+        return byDateRange(start,end);
+    }
+    public List<Transaction> previousMonth() {
+        YearMonth ym = YearMonth.now().minusMonths(1);
+        return byDateRange(ym.atDay(1), ym.atEndOfMonth());
+    }
 
+    public List<Transaction> yearToDate() {
+        Year y = Year.now();
+        LocalDate start = y.atDay(1);
+        LocalDate end = LocalDate.now();
+        return byDateRange(start,end);
+    }
+    public List<Transaction> previousYear() {
+        Year y = Year.now().minusYears(1);
+        return byDateRange(y.atDay(1), y.atMonth(12).atEndOfMonth());
+    }
 }
