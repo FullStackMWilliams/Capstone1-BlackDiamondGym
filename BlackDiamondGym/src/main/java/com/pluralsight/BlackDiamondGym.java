@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class BlackDiamondGym {
 
-                   // Color theme for CLI application
+                    // Color theme for CLI application
 
     public static final String Brown = "\u001b[33m";
     public static final String Beige = "\u001b[37m";
