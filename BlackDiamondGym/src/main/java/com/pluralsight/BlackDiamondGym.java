@@ -190,6 +190,13 @@ public class BlackDiamondGym {
             String input = prompt("Choose your amenities (1-5): ");
             if (input.trim().isEmpty()) {
                 printlnWarn("No changes made."); pause(); return;
+
+                String[] picks = input.split(",");
+                for (String p : picks) {
+                    switch (p.trim()) {
+                        case "1" -> ms.addAddOn("Towel Service");
+                    }
+                }
             }
     }
 
