@@ -177,46 +177,77 @@ public class BlackDiamondGym {
 
             String choice = prompt(Seafoam + "Choose: " + RESET);
             switch (choice) {
-
+                case "1" -> addAmenities(member);
+                case "2" -> cancelMembership(member);
+                case "3" -> {return;}
+                default -> printlnWarn("Invalid option.");
             }
         }
     } private static void addAmenities(Member member) {
         Membership ms = memberships.stream()
                 .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
                 .findFirst().orElse(null);
-            if (ms == null) {
-                printlnWarn("No membership to modify."); pause(); return;
+        if (ms == null) {
+            printlnWarn("No membership to modify.");
+            pause();
+            return;
+        }
+        if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
+            printlnWarn("Cannot modify a canceled membership.");
+            pause();
+            return;
+        }
+        println(null, "\nSelect amenities to add (comma separated):");
+        println(null, "1) Towel Service $5");
+        println(null, "2) Gym Class $20");
+        println(null, "3) Personal trainer $100");
+        println(null, "4) Pool Access $10");
+        println(null, "5) Sauna Access $20");
+        String input = prompt("Choose your amenities (1-5): ");
+        if (input.trim().isEmpty()) {
+            printlnWarn("No changes made.");
+            pause();
+            return;
+        }
+
+        String[] picks = input.split(",");
+        for (String p : picks) {
+            switch (p.trim()) {
+                case "1" -> ms.addAddOn("Towel Service");
+                case "2" -> ms.addAddOn("Gym Class");
+                case "3" -> ms.addAddOn("Personal Trainer");
+                case "4" -> ms.addAddOn("Pool");
+                case "5" -> ms.addAddOn("Sauna");
             }
-            if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
-                printlnWarn("Cannot modify a canceled membership."); pause(); return;
-            }
-            println(null,"\nSelect amenities to add (comma separated):");
-            println(null,"1) Towel Service $5");
-            println(null,"2) Gym Class $20");
-            println(null,"3) Personal trainer $100");
-            println(null,"4) Pool Access $10");
-            println(null,"5) Sauna Access $20");
-            String input = prompt("Choose your amenities (1-5): ");
-            if (input.trim().isEmpty()) {printlnWarn("No changes made.");pause();return;}
+        }
 
-            String[] picks = input.split(",");
-            for (String p : picks) {
-                switch (p.trim()) {
-                    case "1" -> ms.addAddOn("Towel Service");
-                    case "2" -> ms.addAddOn("Gym Class");
-                    case "3" -> ms.addAddOn("Personal Trainer");
-                    case "4" -> ms.addAddOn("Pool");
-                    case "5" -> ms.addAddOn("Sauna");
-                    }
-                }
+        ledger.addDeposit(ms.getTotalPrice(), "Membership add-ons update", "Membership");
+        FileManager.writeMembership(memberships);
+        FileManager.writeTransaction(ledger.getTransactions());
 
-                ledger.addDeposit(ms.getTotalPrice(), "Membership add-ons update", "Membership");
-                FileManager.writeMembership(memberships);
-                FileManager.writeTransaction(ledger.getTransactions());
+        printlnSuccess("Amenities updated. New monthly: $" + String.format("%.2f", ms.getTotalPrice()));
+        pause();
+    }
 
-                printlnSuccess("Amenities updated. New monthly: $" + String.format("%.2f", ms.getTotalPrice()));
-                pause();
-
+    private static void cancelMembership(Member member) {
+        Membership ms = memberships.stream()
+                .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
+                .findFirst().orElse(null);
+        if (ms == null) {
+            printlnWarn("No membership to cancel."); pause(); return;
+        }
+        if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
+            printlnWarn("Membership already canceled."); pause(); return;
+        }
+        String sure = prompt("Are you sure you want to cancel? (yes/no): ");
+        if (sure.equalsIgnoreCase("yes")) {
+            ms.cancel();
+            FileManager.writeMembership(memberships);
+            printlnSuccess("Membership canceled");
+        } else {
+            printlnWarn("Cancellation aborted");
+        }
+        pause();
     }
 
 
