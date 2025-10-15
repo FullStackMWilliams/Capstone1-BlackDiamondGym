@@ -275,7 +275,31 @@ public class BlackDiamondGym {
         }
     }
 
-
+    private static void recordDeposit() {
+        double amt = parseDouble(prompt("Amount: $"));
+        String desc = prompt("Description: ");
+        String vendor = prompt("Vendor: ");
+        ledger.addPayment(amt,desc,vendor);
+        FileManager.writeTransaction(ledger.getTransactions());
+        printlnSuccess("Deposit recorded.");
+        pause();
+    }
+    private static void recordPayment() {
+        double amt = parseDouble(prompt("Amount: $"));
+        String desc = prompt("Description: ");
+        String vendor = prompt("Vendor: ");
+        ledger.addPayment(amt, desc, vendor);
+        FileManager.writeTransaction(ledger.getTransactions());
+        printlnSuccess("Payment recorded.");
+        pause();
+    }
+    private static void showTransactions(List<Transaction> list) {
+        clear();
+        println(Gray, "Date      | Type     | Amount    | Vendor    | Description");
+        println(Gray, "-----------------------------------------------------------------");
+        for (Transaction t : list) println(null,t.toString());
+        pause();
+    }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
