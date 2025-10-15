@@ -141,6 +141,15 @@ public class BlackDiamondGym {
         println(BeigeBackground,"\nYour account has been created. please login from the home screen.");
         pause();
     }
+    private static void memberDashboard(Member member) {
+        while (true) {
+            clear();
+            println(Amber,"==================== MEMBER DASHBOARD ===================");
+            println(Aqua,"Welcome, " + member.getUsername() + "!");
+            println(DeepBlue,"--------------------------------------------------------");
+
+        }
+    }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
