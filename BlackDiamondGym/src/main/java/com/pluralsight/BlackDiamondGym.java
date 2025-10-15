@@ -160,6 +160,15 @@ public class BlackDiamondGym {
                 println(null,"Status:  " + ms.getStatus());
                 println(null,"Monthly:  $" + String.format("%.2f", ms.getTotalPrice()));
             }
+            println(BeigeBackground,"-------------------------------------");
+            println(null,"[1] Add amenities");
+            println(null,"[2] Cancel membership");
+            println(null,"[3] Logout");
+
+            String choice = prompt(Seafoam + "Choose: " + RESET);
+            switch (choice) {
+
+            }
         }
     }
 
