@@ -253,9 +253,17 @@ public class BlackDiamondGym {
             println(null,"[2] View Reports");
             println(null,"[3] App Info (Members/Revenue)");
             println(null,"[4] Logout");
+
+            String choice = prompt(Purple + "Choose: " + RESET);
+            switch (choice) {
+                case "1" -> ledgerMenu();
+                case "2" -> reportsMenu();
+                case "3" -> appInfo();
+                case "4" -> { return; }
+                default -> printlnWarn("Invalid option.");
+            }
         }
     }
-
     private static void ledgerMenu() {
         while (true) {
             clear();
