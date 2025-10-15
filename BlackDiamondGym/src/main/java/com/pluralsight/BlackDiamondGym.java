@@ -29,14 +29,18 @@ public class BlackDiamondGym {
 
         while (true) {
             displayHomeScreen();
+            String choice = prompt(Seafoam + "Enter your choice: " + RESET);
+            switch (choice) {
+                case "1" -> loginFlow();
+                case "2" -> signUpFlow();
+                case "3" -> { exitScreen(); return; }
+                default -> printlnWarn("Invalid option. Try again.");
+            }
         }
-
-
     }
 
     public static void displayHomeScreen() {
-        // clearScreen();
-
+        clear();
         System.out.println(Colors.BeigeBackground + "=================================" + RESET);
         System.out.println(DeepBlue + " Welcome to BlackDiamond Gym" + RESET);
         System.out.println(BeigeBackground + "=================================" + RESET);
