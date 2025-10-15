@@ -262,6 +262,20 @@ public class BlackDiamondGym {
         }
     }
 
+    private static void ledgerMenu() {
+        while (true) {
+            clear();
+            println(DeepBlue,"========================== LEDGER / ACCOUNTING ===================");
+            println(null,"[1] Record Deposit (Income)");
+            println(null, "[2] Record Payment (Expenses)");
+            println(null,"[3] View All Transactions");
+            println(null,"[4] View Deposits Only");
+            println(null,"[5] View Payments Only");
+            println(null,"[6] Back");
+        }
+    }
+
+
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
