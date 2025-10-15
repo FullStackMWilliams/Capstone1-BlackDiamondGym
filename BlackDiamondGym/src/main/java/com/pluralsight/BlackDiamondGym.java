@@ -181,7 +181,16 @@ public class BlackDiamondGym {
             if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
                 printlnWarn("Cannot modify a canceled membership."); pause(); return;
             }
-            println(null,"\nSelect amenities to add (");
+            println(null,"\nSelect amenities to add (comma separated):");
+            println(null,"1) Towel Service $5");
+            println(null,"2) Gym Class $20");
+            println(null,"3) Personal trainer $100");
+            println(null,"4) Pool Access $10");
+            println(null,"5) Sauna Access $20");
+            String input = prompt("Choose your amenities (1-5): ");
+            if (input.trim().isEmpty()) {
+                printlnWarn("No changes made."); pause(); return;
+            }
     }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
