@@ -90,6 +90,33 @@ public class BlackDiamondGym {
         if (password.trim().isEmpty()) {
             printlnWarn("Password cannot be empty."); pause(); return;
         }
+        println(null,"\nChoose a base membership:");
+        println(null,"1) BASIC ($29.99)");
+        println(null,"2) PREMIUM ($49.99)");
+        println(null,"3) VIP ($79.99)");
+        String planChoice = prompt("Enter (1-3): ");
+        Membership.Plan plan = switch (planChoice) {
+            case "1" -> Membership.Plan.BASIC;
+            case "2" -> Membership.Plan.PREMIUM;
+            case "3" -> Membership.Plan.VIP;
+            default -> Membership.Plan.BASIC;
+        };
+        println(null,"\nAdd-ons (type the numbers separated by commas, or press Enter for none):");
+        println(null,"1) Towel Service ($5)");
+        println(null, "2) Gym Class ($25)");
+        println(null,"3) Personal trainer ($100)");
+        println(null,"4) Pool ($10");
+        println(null,"5) Sauna ($20)");
+        String addonInput = prompt("Coose add-ons (1-5)");
+        List<String> addOns = new ArrayList<>();
+        if (!addonInput.trim().isEmpty()) {
+            String[] picks = addonInput.split(",");
+            for (String p : picks) {
+                switch (p.trim()) {
+                    case "1"
+                }
+            }
+        }
     }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
