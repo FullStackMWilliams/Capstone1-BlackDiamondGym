@@ -3,6 +3,7 @@ package com.pluralsight;
                                             /* BLACK DIAMOND GYM */
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -311,9 +312,37 @@ public class BlackDiamondGym {
             println(null,"[5] Search by Vendor");
             println(null,"[6] Search by Date Range");
             println(null,"[7] Back");
+
+            String c = prompt(Seafoam + "Choose: " + RESET);
+            switch (c) {
+                case "1" -> showTransactions(ledger.monthToDate());
+                case "2" -> showTransactions(ledger.previousMonth());
+                case "3" -> showTransactions(ledger.yearToDate());
+                case "4" -> showTransactions(ledger.previousYear());
+                case "5" -> {
+                    String vendor = prompt("Vendor contains: ");
+                    showTransactions(ledger.byVendor(vendor));
+                }
+                case "6" -> {
+                    LocalDate start = LocalDate.parse(prompt("Start date (YYYY-MM-DD): "));
+                    LocalDate end = LocalDate.parse(prompt("End date (YYYY-MM-DD): "));
+                    showTransactions(ledger.byDateRange(start,end));
+                }
+                case "7" -> {return;}
+                default -> printlnWarn("Invalid option.");
+            }
         }
     }
-
+    private static void appInfo() {
+        clear();
+        long totalMembers = memberships.stream().filter(m -> "ACTIVE".equalsIgnoreCase(m.getStatus())).count();
+        double mrr = memberships.stream()
+                .filter(m ->"ACTIVE".equalsIgnoreCase(m.getStatus()))
+                .mapToDouble(Membership::getTotalPrice).sum();
+        println(BeigeBackground,"Active Members: " + totalMembers);
+        println(BeigeBackground,"Projected Monthly Recurring Revenue: $" + String.format("%.2f",mrr));
+        pause();
+    }
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
 
