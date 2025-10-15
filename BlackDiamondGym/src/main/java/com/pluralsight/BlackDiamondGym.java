@@ -148,6 +148,18 @@ public class BlackDiamondGym {
             println(Aqua,"Welcome, " + member.getUsername() + "!");
             println(DeepBlue,"--------------------------------------------------------");
 
+            Membership ms = memberships.stream()
+                    .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
+                    .findFirst().orElse(null);
+
+            if (ms == null) {
+                println(null, "No active membership found.");
+            } else {
+                println(null,"Membership: " + ms.getPlan());
+                println(null,"Add-ons:  " + (ms.getAddOns().isEmpty() ? "None" : ms.getAddOns()));
+                println(null,"Status:  " + ms.getStatus());
+                println(null,"Monthly:  $" + String.format("%.2f", ms.getTotalPrice()));
+            }
         }
     }
 
