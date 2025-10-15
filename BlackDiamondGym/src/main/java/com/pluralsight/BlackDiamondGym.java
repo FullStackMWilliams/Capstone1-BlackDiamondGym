@@ -79,7 +79,12 @@ public class BlackDiamondGym {
         if (found.isAdmin()) {
 
         } else {
-
+            Member m = toMember(found);
+            Membership mm = memberships.stream()
+                    .filter(ms-> ms.getUsername().equalsIgnoreCase(m.getUsername()))
+                    .findFirst().orElse(null);
+            m.setMembership(mm);
+            memberDashboard(m);
         }
     }
 
