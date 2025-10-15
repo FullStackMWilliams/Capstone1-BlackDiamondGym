@@ -249,6 +249,18 @@ public class BlackDiamondGym {
         }
         pause();
     }
+    private static void adminDashboard(Admin admin) {
+        while (true) {
+            clear();
+            println(DeepBlue,"==================== ADMIN DASHBOARD =======================");
+            println(BeigeBackground,"User: " + admin.getUsername());
+            println(BeigeBackground,"------------------------------------------------------");
+            println(null,"[1] Sales & Purchases (Ledger)");
+            println(null,"[2] View Reports");
+            println(null,"[3] App Info (Members/Revenue)");
+            println(null,"[4] Logout");
+        }
+    }
 
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
