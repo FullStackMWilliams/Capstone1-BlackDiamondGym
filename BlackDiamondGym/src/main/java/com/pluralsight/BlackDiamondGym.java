@@ -65,9 +65,33 @@ public class BlackDiamondGym {
                 .filter(u ->u.getUsername().equalsIgnoreCase(username) && u.getPassword().equals(password))
                 .findFirst().orElse(null);
         if (found == null) {
-            printlnError();
+            printlnError("Login failed. Check username/password.");
+            pause();
+            return;
+        }
+        if (found.isAdmin()) {
+
+        }else {
+
         }
     }
+    private static void signUpFlow() {
+        clear();
+        println(Amber,"=================== SIGN UP ====================");
+        String username = prompt("Choose a username: ").trim();
+        if (username.isEmpty()) {
+            printlnWarn("Username cannot be empty."); pause(); return;
+        }
+        boolean exists = users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
+        if (exists) {
+            printlnWarn("Username already exists. Please try another."); pause(); return;
+        }
+        String password = prompt("Choose a password: ");
+        if (password.trim().isEmpty()) {
+            printlnWarn("Password cannot be empty."); pause(); return;
+        }
+    }
+
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
 
