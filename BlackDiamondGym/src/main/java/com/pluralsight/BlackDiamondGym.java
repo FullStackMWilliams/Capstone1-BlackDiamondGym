@@ -121,6 +121,25 @@ public class BlackDiamondGym {
                 }
             }
         }
+        Member newMember = new Member(username,password);
+        Membership newMembership = new Membership(username, plan, addOns);
+
+        users.add(newMember);
+        memberships.add(newMembership);
+
+        ledger.addDeposit(newMembership.getTotalPrice(), "New membership (" + plan + ")", "Membership");
+
+        FileManager.writeUsers(users);
+        FileManager.writeMembership(memberships);
+        FileManager.writeTransaction(ledger.getTransactions());
+
+        clear();
+        println(null,"Welcome, " + username + "!");
+        println(null,"Plan: " + plan);
+        println(null,"Add-ons: " + (addOns.isEmpty() ? "None" : addOns));
+        println(null,"Monthly Total: $" + String.format("%.2f", newMembership.getTotalPrice()));
+        println(BeigeBackground,"\nYour account has been created. please login from the home screen.");
+        pause();
     }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
