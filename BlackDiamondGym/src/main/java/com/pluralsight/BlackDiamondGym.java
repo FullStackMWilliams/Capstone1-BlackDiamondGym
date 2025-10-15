@@ -113,7 +113,11 @@ public class BlackDiamondGym {
             String[] picks = addonInput.split(",");
             for (String p : picks) {
                 switch (p.trim()) {
-                    case "1"
+                    case "1" -> addOns.add("Towel Service");
+                    case "2" -> addOns.add("Gym Class");
+                    case "3" -> addOns.add("Personal Trainer");
+                    case "4" -> addOns.add("Pool");
+                    case "5" -> addOns.add("Sauna");
                 }
             }
         }
