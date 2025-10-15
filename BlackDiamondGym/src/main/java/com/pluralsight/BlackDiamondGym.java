@@ -171,6 +171,18 @@ public class BlackDiamondGym {
             }
         }
     }
+    private static void addAmenities(Member member) {
+        Membership ms = memberships.stream()
+                .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
+                .findFirst().orElse(null);
+            if (ms == null) {
+                printlnWarn("No membership to modify."); pause(); return;
+            }
+            if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
+                printlnWarn("Cannot modify a canceled membership."); pause(); return;
+            }
+            println(null,"\nSelect amenities to add (");
+    }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
