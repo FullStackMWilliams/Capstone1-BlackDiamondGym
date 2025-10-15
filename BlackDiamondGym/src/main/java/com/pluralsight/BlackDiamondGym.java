@@ -300,6 +300,19 @@ public class BlackDiamondGym {
         for (Transaction t : list) println(null,t.toString());
         pause();
     }
+    private static void reportsMenu() {
+        while (true) {
+            clear();
+            println(DeepBlue,"================================= REPORTS =========================");
+            println(null,"[1] Month-to-Date");
+            println(null,"[2] Previous Month");
+            println(null,"[3] Year-to-Date");
+            println(null,"[4] Previous Year");
+            println(null,"[5] Search by Vendor");
+            println(null,"[6] Search by Date Range");
+            println(null,"[7] Back");
+        }
+    }
 
     private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
     private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
