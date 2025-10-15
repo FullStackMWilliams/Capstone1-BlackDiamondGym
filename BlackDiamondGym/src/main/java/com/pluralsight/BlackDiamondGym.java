@@ -38,7 +38,6 @@ public class BlackDiamondGym {
             }
         }
     }
-
     public static void displayHomeScreen() {
         clear();
         System.out.println(Colors.BeigeBackground + "=================================" + RESET);
@@ -52,7 +51,6 @@ public class BlackDiamondGym {
         System.out.println(Gray + "-------------------------------------------------------");
         System.out.println(Amber + "\"Life is easier when you're stronger\".- Markus" + RESET);
     }
-
     private static void exitScreen() {
         clear();
         println(DeepBlue, "===================================");
@@ -61,7 +59,6 @@ public class BlackDiamondGym {
         println(BeigeBackground, "Come back soon to continue your journey!");
         println(Amber, "\n--- BlackDiamondGym Team");
     }
-
     private static void loginFlow() {
         clear();
         println(Olive, "===================== LOGIN ============================");
@@ -71,13 +68,14 @@ public class BlackDiamondGym {
         User found = users.stream()
                 .filter(u -> u.getUsername().equalsIgnoreCase(username) && u.getPassword().equals(password))
                 .findFirst().orElse(null);
+
         if (found == null) {
             printlnError("Login failed. Check username/password.");
             pause();
             return;
         }
         if (found.isAdmin()) {
-
+            adminDashboard((Admin) toAdmin(found));
         } else {
             Member m = toMember(found);
             Membership mm = memberships.stream()
@@ -87,27 +85,19 @@ public class BlackDiamondGym {
             memberDashboard(m);
         }
     }
-
     private static void signUpFlow() {
         clear();
         println(Amber, "=================== SIGN UP ====================");
         String username = prompt("Choose a username: ").trim();
-        if (username.isEmpty()) {
-            printlnWarn("Username cannot be empty.");
-            pause();
-            return;
+        if (username.isEmpty()) {printlnWarn("Username cannot be empty.");pause();return;
         }
         boolean exists = users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
         if (exists) {
-            printlnWarn("Username already exists. Please try another.");
-            pause();
-            return;
+            printlnWarn("Username already exists. Please try another.");pause();return;
         }
         String password = prompt("Choose a password: ");
         if (password.trim().isEmpty()) {
-            printlnWarn("Password cannot be empty.");
-            pause();
-            return;
+            printlnWarn("Password cannot be empty.");pause();return;
         }
         println(null, "\nChoose a base membership:");
         println(null, "1) BASIC ($29.99)");
@@ -120,13 +110,14 @@ public class BlackDiamondGym {
             case "3" -> Membership.Plan.VIP;
             default -> Membership.Plan.BASIC;
         };
+
         println(null, "\nAdd-ons (type the numbers separated by commas, or press Enter for none):");
         println(null, "1) Towel Service ($5)");
         println(null, "2) Gym Class ($25)");
         println(null, "3) Personal trainer ($100)");
         println(null, "4) Pool ($10");
         println(null, "5) Sauna ($20)");
-        String addonInput = prompt("Coose add-ons (1-5)");
+        String addonInput = prompt("Choose add-ons (1-5)");
         List<String> addOns = new ArrayList<>();
         if (!addonInput.trim().isEmpty()) {
             String[] picks = addonInput.split(",");
@@ -153,6 +144,7 @@ public class BlackDiamondGym {
         FileManager.writeTransaction(ledger.getTransactions());
 
         clear();
+        println(Aqua,"======================== WELCOME =====================");
         println(null, "Welcome, " + username + "!");
         println(null, "Plan: " + plan);
         println(null, "Add-ons: " + (addOns.isEmpty() ? "None" : addOns));
@@ -189,7 +181,7 @@ public class BlackDiamondGym {
             switch (choice) {
                 case "1" -> addAmenities(member);
                 case "2" -> cancelMembership(member);
-                case "3" -> {return;}
+                case "3" -> { return; }
                 default -> printlnWarn("Invalid option.");
             }
         }
@@ -198,14 +190,10 @@ public class BlackDiamondGym {
                 .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
                 .findFirst().orElse(null);
         if (ms == null) {
-            printlnWarn("No membership to modify.");
-            pause();
-            return;
+            printlnWarn("No membership to modify."); pause(); return;
         }
         if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
-            printlnWarn("Cannot modify a canceled membership.");
-            pause();
-            return;
+            printlnWarn("Cannot modify a canceled membership."); pause(); return;
         }
         println(null, "\nSelect amenities to add (comma separated):");
         println(null, "1) Towel Service $5");
@@ -215,11 +203,8 @@ public class BlackDiamondGym {
         println(null, "5) Sauna Access $20");
         String input = prompt("Choose your amenities (1-5): ");
         if (input.trim().isEmpty()) {
-            printlnWarn("No changes made.");
-            pause();
-            return;
+            printlnWarn("No changes made."); pause(); return;
         }
-
         String[] picks = input.split(",");
         for (String p : picks) {
             switch (p.trim()) {
@@ -238,7 +223,6 @@ public class BlackDiamondGym {
         printlnSuccess("Amenities updated. New monthly: $" + String.format("%.2f", ms.getTotalPrice()));
         pause();
     }
-
     private static void cancelMembership(Member member) {
         Membership ms = memberships.stream()
                 .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
