@@ -45,9 +45,9 @@ public class BlackDiamondGym {
         System.out.println(BeigeBackground + "=================================" + RESET);
         System.out.println(Seafoam + "\nYour journey to strength and balance begins here." + RESET);
         System.out.println(Gray + "\n-----------------------------------------------------" + RESET);
-        System.out.println(Olive + "[1]" + RESET + " Login");
-        System.out.println(Olive + "[2]" + RESET + " Sign Up");
-        System.out.println(Olive + "[3]" + RESET + " Exit");
+        System.out.println(null + "[1]" + RESET + " Login");
+        System.out.println(null + "[2]" + RESET + " Sign Up");
+        System.out.println(null + "[3]" + RESET + " Exit");
         System.out.println(Gray + "-------------------------------------------------------");
         System.out.println(Amber + "\"Life is easier when you're stronger\".- Markus" + RESET);
     }
@@ -89,16 +89,18 @@ public class BlackDiamondGym {
         clear();
         println(Amber, "=================== SIGN UP ====================");
         String username = prompt("Choose a username: ").trim();
-        if (username.isEmpty()) {printlnWarn("Username cannot be empty.");pause();return;
+        if (username.isEmpty()) {
+            printlnWarn("Username cannot be empty."); pause(); return;
         }
         boolean exists = users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
         if (exists) {
-            printlnWarn("Username already exists. Please try another.");pause();return;
+            printlnWarn("Username already exists. Please try another."); pause(); return;
         }
         String password = prompt("Choose a password: ");
         if (password.trim().isEmpty()) {
-            printlnWarn("Password cannot be empty.");pause();return;
+            printlnWarn("Password cannot be empty."); pause(); return;
         }
+
         println(null, "\nChoose a base membership:");
         println(null, "1) BASIC ($29.99)");
         println(null, "2) PREMIUM ($49.99)");
@@ -182,10 +184,11 @@ public class BlackDiamondGym {
                 case "1" -> addAmenities(member);
                 case "2" -> cancelMembership(member);
                 case "3" -> { return; }
-                default -> printlnWarn("Invalid option.");
+                default  -> printlnWarn("Invalid option.");
             }
         }
-    } private static void addAmenities(Member member) {
+    }
+    private static void addAmenities(Member member) {
         Membership ms = memberships.stream()
                 .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
                 .findFirst().orElse(null);
@@ -195,6 +198,7 @@ public class BlackDiamondGym {
         if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
             printlnWarn("Cannot modify a canceled membership."); pause(); return;
         }
+
         println(null, "\nSelect amenities to add (comma separated):");
         println(null, "1) Towel Service $5");
         println(null, "2) Gym Class $20");
@@ -217,6 +221,7 @@ public class BlackDiamondGym {
         }
 
         ledger.addDeposit(ms.getTotalPrice(), "Membership add-ons update", "Membership");
+
         FileManager.writeMembership(memberships);
         FileManager.writeTransaction(ledger.getTransactions());
 
@@ -269,19 +274,29 @@ public class BlackDiamondGym {
             clear();
             println(DeepBlue,"========================== LEDGER / ACCOUNTING ===================");
             println(null,"[1] Record Deposit (Income)");
-            println(null, "[2] Record Payment (Expenses)");
+            println(null,"[2] Record Payment (Expenses)");
             println(null,"[3] View All Transactions");
             println(null,"[4] View Deposits Only");
             println(null,"[5] View Payments Only");
             println(null,"[6] Back");
+
+            String c = prompt(BeigeBackground +"Choose: " + RESET);
+            switch (c) {
+                case "1" -> recordDeposit();
+                case "2" -> recordPayment();
+                case "3" -> showTransactions(ledger.all());
+                case "4" -> showTransactions(ledger.deposits());
+                case "5" -> showTransactions(ledger.payments());
+                case "6" -> { return; }
+                default  -> printlnWarn("Invalid option.");
+            }
         }
     }
-
     private static void recordDeposit() {
         double amt = parseDouble(prompt("Amount: $"));
         String desc = prompt("Description: ");
         String vendor = prompt("Vendor: ");
-        ledger.addPayment(amt,desc,vendor);
+        ledger.addPayment(amt, desc, vendor);
         FileManager.writeTransaction(ledger.getTransactions());
         printlnSuccess("Deposit recorded.");
         pause();
@@ -327,10 +342,10 @@ public class BlackDiamondGym {
                 case "6" -> {
                     LocalDate start = LocalDate.parse(prompt("Start date (YYYY-MM-DD): "));
                     LocalDate end = LocalDate.parse(prompt("End date (YYYY-MM-DD): "));
-                    showTransactions(ledger.byDateRange(start,end));
+                    showTransactions(ledger.byDateRange(start, end));
                 }
-                case "7" -> {return;}
-                default -> printlnWarn("Invalid option.");
+                case "7" -> { return; }
+                default  -> printlnWarn("Invalid option.");
             }
         }
     }
@@ -344,8 +359,8 @@ public class BlackDiamondGym {
         println(BeigeBackground,"Projected Monthly Recurring Revenue: $" + String.format("%.2f",mrr));
         pause();
     }
-    private static Admin toAdmin(User u) {return new Admin(u.getUsername(), u.getPassword()); }
-    private static Member toMember(User u) {return new Member(u.getUsername(), u.getPassword()); }
+    private static Admin toAdmin(User u) { return new Admin(u.getUsername(), u.getPassword()); }
+    private static Member toMember(User u) { return new Member(u.getUsername(), u.getPassword()); }
 
     private static String prompt(String msg) {
         System.out.println(msg);
