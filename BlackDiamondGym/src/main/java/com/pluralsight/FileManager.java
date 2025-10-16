@@ -99,7 +99,7 @@ public class FileManager {
         try(BufferedReader br = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] t = line.split(",",-1);
+                String[] t = line.split("\\|");
                 if (t.length >= 6) {
                     LocalDate date = LocalDate.parse(t[0]);
                     LocalTime time = LocalTime.parse(t[1]);
