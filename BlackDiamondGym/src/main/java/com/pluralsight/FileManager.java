@@ -92,7 +92,8 @@ public class FileManager {
             System.out.println(Colors.Red + "Error writing membership: " + e.getMessage() + Colors.RESET);
         }
     }
-    public static List<Transaction> readTransactions() {
+    public static
+    List<Transaction> readTransactions() {
         List<Transaction> list = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
             String line;

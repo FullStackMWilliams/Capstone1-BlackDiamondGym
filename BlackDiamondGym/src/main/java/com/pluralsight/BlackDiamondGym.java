@@ -45,9 +45,9 @@ public class BlackDiamondGym {
         System.out.println(BeigeBackground + "=================================" + RESET);
         System.out.println(Seafoam + "\nYour journey to strength and balance begins here." + RESET);
         System.out.println(Gray + "\n-----------------------------------------------------" + RESET);
-        System.out.println(null + "[1]" + RESET + " Login");
-        System.out.println(null + "[2]" + RESET + " Sign Up");
-        System.out.println(null + "[3]" + RESET + " Exit");
+        System.out.println(Gray + "[1]" + RESET + " Login");
+        System.out.println(Gray + "[2]" + RESET + " Sign Up");
+        System.out.println(Gray + "[3]" + RESET + " Exit");
         System.out.println(Gray + "-------------------------------------------------------");
         System.out.println(Amber + "\"Life is easier when you're stronger\".- Markus" + RESET);
     }
@@ -117,7 +117,7 @@ public class BlackDiamondGym {
         println(null, "1) Towel Service ($5)");
         println(null, "2) Gym Class ($25)");
         println(null, "3) Personal trainer ($100)");
-        println(null, "4) Pool ($10");
+        println(null, "4) Pool ($10)");
         println(null, "5) Sauna ($20)");
         String addonInput = prompt("Choose add-ons (1-5)");
         List<String> addOns = new ArrayList<>();
