@@ -21,7 +21,7 @@ public class Membership {
             case "personal trainer" -> {
                 return 100.00;
             }
-            case "gym classes" -> {
+            case "gym class" -> {
                 return 25.00;
             }
             case "pool" -> {

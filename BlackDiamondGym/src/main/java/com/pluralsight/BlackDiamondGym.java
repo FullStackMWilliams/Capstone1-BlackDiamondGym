@@ -201,7 +201,7 @@ public class BlackDiamondGym {
 
         println(null, "\nSelect amenities to add (comma separated):");
         println(null, "1) Towel Service $5");
-        println(null, "2) Gym Class $20");
+        println(null, "2) Gym Class $25");
         println(null, "3) Personal trainer $100");
         println(null, "4) Pool Access $10");
         println(null, "5) Sauna Access $20");
