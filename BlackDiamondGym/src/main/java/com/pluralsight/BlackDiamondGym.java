@@ -53,15 +53,15 @@ public class BlackDiamondGym {
     }
     private static void exitScreen() {
         clear();
-        println(DeepBlue, "===================================");
-        println(OceanBlue, "                       THANK YOU FOR VISITING");
-        println(BeigeBackground, "\nYour dedication shapes your strength.");
-        println(BeigeBackground, "Come back soon to continue your journey!");
-        println(Amber, "\n--- BlackDiamondGym Team");
+        println(DeepBlue,"===================================");
+        println(OceanBlue,"                       THANK YOU FOR VISITING");
+        println(BeigeBackground,"\nYour dedication shapes your strength.");
+        println(BeigeBackground,"Come back soon to continue your journey!");
+        println(Amber,"\n--- BlackDiamondGym Team");
     }
     private static void loginFlow() {
         clear();
-        println(Olive, "===================== LOGIN ============================");
+        println(Olive,"===================== LOGIN ============================");
         String username = prompt("Username: ");
         String password = prompt("Password: ");
 
@@ -79,7 +79,7 @@ public class BlackDiamondGym {
         } else {
             Member m = toMember(found);
             Membership mm = memberships.stream()
-                    .filter(ms-> ms.getUsername().equalsIgnoreCase(m.getUsername()))
+                    .filter(ms -> ms.getUsername().equalsIgnoreCase(m.getUsername()))
                     .findFirst().orElse(null);
             m.setMembership(mm);
             memberDashboard(m);
@@ -127,7 +127,7 @@ public class BlackDiamondGym {
                 switch (p.trim()) {
                     case "1" -> addOns.add("Towel Service");
                     case "2" -> addOns.add("Gym Class");
-                    case "3" -> addOns.add("Personal Trainer");
+                    case "3" -> addOns.add("Personal trainer");
                     case "4" -> addOns.add("Pool");
                     case "5" -> addOns.add("Sauna");
                 }
