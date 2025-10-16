@@ -254,8 +254,8 @@ public class BlackDiamondGym {
             println(DeepBlue,"==================== ADMIN DASHBOARD =======================");
             println(BeigeBackground,"User: " + admin.getUsername());
             println(BeigeBackground,"------------------------------------------------------");
-            println(null,"[1] Sales & Purchases (Ledger)");
-            println(null,"[2] View Reports");
+            println(null,"[1] Sales & Purchases");
+            println(null,"[2] View Reports (Ledger)");
             println(null,"[3] App Info (Members/Revenue)");
             println(null,"[4] Logout");
 
@@ -327,7 +327,8 @@ public class BlackDiamondGym {
             println(null,"[4] Previous Year");
             println(null,"[5] Search by Vendor");
             println(null,"[6] Search by Date Range");
-            println(null,"[7] Back");
+            println(null,"[7] View all");
+            println(null,"[8] Back");
 
             String c = prompt(Seafoam + "Choose: " + RESET);
             switch (c) {
@@ -344,7 +345,8 @@ public class BlackDiamondGym {
                     LocalDate end = LocalDate.parse(prompt("End date (YYYY-MM-DD): "));
                     showTransactions(ledger.byDateRange(start, end));
                 }
-                case "7" -> { return; }
+                case "7" -> showTransactions(ledger.all());
+                case "8" -> { return; }
                 default  -> printlnWarn("Invalid option.");
             }
         }
