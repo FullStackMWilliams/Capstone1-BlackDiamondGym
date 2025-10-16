@@ -12,13 +12,17 @@ public class Transaction {
     private String vendor;
     private LocalTime time;
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+
     public Transaction() {
 
     }
     public Transaction(LocalDate date, LocalTime time, String type, double amount, String description, String vendor) {
         this.date = date;
         this.time = time;
-        this.type = type.trim().toUpperCase();
+        this.type = type != null ? type.trim().toUpperCase() : "";
         this.amount = amount;
         this.description = description;
         this.vendor = vendor;
@@ -70,7 +74,18 @@ public class Transaction {
 
     @Override
     public String toString() {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return date + " | " + time + " | " + type + " | $" + String.format("%.2f", amount) + " | " + vendor + " | " + description;
+        String formattedDate = date != null ? date.format(DATE_TIME_FORMATTER) : "";
+        String formattedTime = time != null ? time.format(TIME_FORMATTER) : "";
+        String formattedType = type != null ? type.toUpperCase() : "";
+        String formattedDescription = description != null ? description : "";
+        String formattedVendor = vendor != null ? vendor : "";
+        String formattedAmount = String.format("%.2f", amount);
+
+        return formattedDate + "|" +
+                formattedTime + "|" +
+                formattedType + "|" +
+                formattedDescription + "|" +
+                formattedVendor + "|" +
+                formattedAmount;
     }
 }
