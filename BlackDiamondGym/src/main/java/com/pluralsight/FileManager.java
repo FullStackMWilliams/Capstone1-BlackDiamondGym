@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,13 +100,14 @@ public class FileManager {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] t = line.split(",",-1);
-                if (t.length >= 5) {
+                if (t.length >= 6) {
                     LocalDate date = LocalDate.parse(t[0]);
-                    String type = t[1];
-                    double amount = Double.parseDouble(t[2]);
-                    String description = t[3];
-                    String vendor = t[4];
-                    list.add(new Transaction(date, type, amount, description, vendor));
+                    LocalTime time = LocalTime.parse(t[1]);
+                    String type = t[2];
+                    double amount = Double.parseDouble(t[3]);
+                    String description = t[4];
+                    String vendor = t[5];
+                    list.add(new Transaction(date, time, type, amount, description, vendor));
                 }
             }
         } catch (IOException ignored) {}
@@ -115,10 +117,11 @@ public class FileManager {
         try(PrintWriter pw = new PrintWriter(new FileWriter(TRANSACTIONS_FILE))) {
             for (Transaction t : txs) {
                 pw.println(
-                        t.getDate() + "," +
-                        t.getType() + "," +
-                        t.getAmount() + "," +
-                        sanitize(t.getDescription()) + "," +
+                        t.getDate() + "|" +
+                        t.getTime() + "|" +
+                        t.getType() + "|" +
+                        t.getAmount() + "|" +
+                        sanitize(t.getDescription()) + "|" +
                         sanitize(t.getVendor())
                 );
             }

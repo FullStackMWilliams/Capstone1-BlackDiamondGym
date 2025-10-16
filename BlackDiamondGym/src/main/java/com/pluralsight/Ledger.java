@@ -1,5 +1,6 @@
 package com.pluralsight;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -21,11 +22,11 @@ public class Ledger {
        if (list != null) transactions.addAll(list);
     }
     public void addDeposit (double amount, String description, String vendor) {
-        Transaction t = new Transaction(LocalDate.now(), "DEPOSIT", amount, description, vendor);
+        Transaction t = new Transaction(LocalDate.now(),LocalTime.now(), "DEPOSIT", amount, description, vendor);
         transactions.add(t);
     }
     public void addPayment (double amount, String description, String vendor) {
-        Transaction t = new Transaction(LocalDate.now(),"PAYMENT", amount, description, vendor);
+        Transaction t = new Transaction(LocalDate.now(),LocalTime.now(), "PAYMENT", -Math.abs(amount), description, vendor);
         transactions.add(t);
     }
     public List<Transaction> all() {
