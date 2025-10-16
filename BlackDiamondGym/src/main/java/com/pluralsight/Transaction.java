@@ -9,9 +9,8 @@ public class Transaction {
     private String description;
     private String vendor;
 
-    public Transaction() {
+    public Transaction() { }
 
-    }
     public Transaction(LocalDate date, String type, double amount, String description, String vendor) {
         this.date = date;
         this.type = type.trim().toUpperCase();

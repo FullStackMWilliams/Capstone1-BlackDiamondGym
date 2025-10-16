@@ -1,6 +1,7 @@
-2025-10-15,PAYMENT,1000000.0,Seed capital,Private Investor
 2025-10-15,DEPOSIT,114.99,New membership (VIP),Membership
 2025-10-15,DEPOSIT,114.99,New membership (VIP),Membership
 2025-10-16,DEPOSIT,134.99,New membership (BASIC),Membership
 2025-10-16,DEPOSIT,49.99,New membership (PREMIUM),Membership
 2025-10-16,DEPOSIT,74.99000000000001,New membership (PREMIUM),Membership
+2025-10-16,PAYMENT,100000.0,funding,Private Investor
+2025-10-16,PAYMENT,1000.0,funding,Private Investor

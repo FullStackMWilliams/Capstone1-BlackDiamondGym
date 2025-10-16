@@ -296,7 +296,7 @@ public class BlackDiamondGym {
         double amt = parseDouble(prompt("Amount: $"));
         String desc = prompt("Description: ");
         String vendor = prompt("Vendor: ");
-        ledger.addPayment(amt, desc, vendor);
+        ledger.addDeposit(amt, desc, vendor);
         FileManager.writeTransaction(ledger.getTransactions());
         printlnSuccess("Deposit recorded.");
         pause();
