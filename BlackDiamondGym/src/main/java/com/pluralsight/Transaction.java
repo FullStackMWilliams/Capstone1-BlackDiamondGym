@@ -5,87 +5,93 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
+
     private LocalDate date;
+    private LocalTime time;
     private String type;
-    private double amount;
     private String description;
     private String vendor;
-    private LocalTime time;
+    private double amount;
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    // ANSI escape codes for colors (for console output only)
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String RESET = "\u001B[0m";
 
-
-    public Transaction() {
-
-    }
+    // Constructor with all fields
     public Transaction(LocalDate date, LocalTime time, String type, double amount, String description, String vendor) {
         this.date = date;
         this.time = time;
-        this.type = type != null ? type.trim().toUpperCase() : "";
+        this.type = type.trim().toUpperCase();
         this.amount = amount;
         this.description = description;
         this.vendor = vendor;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
+    // Default constructor
+    public Transaction() {}
 
-    public String getType() {
-        return type;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getVendor() {
-        return vendor;
-    }
-
+    // ---------- Getters ----------
+    public LocalDate getDate() { return date; }
     public LocalTime getTime() { return time; }
+    public String getType() { return type; }
+    public String getDescription() { return description; }
+    public String getVendor() { return vendor; }
+    public double getAmount() { return amount; }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
+    // ---------- Setters ----------
+    public void setDate(LocalDate date) { this.date = date; }
     public void setTime(LocalTime time) { this.time = time; }
+    public void setType(String type) { this.type = type.trim().toUpperCase(); }
+    public void setDescription(String description) { this.description = description; }
+    public void setVendor(String vendor) { this.vendor = vendor; }
+    public void setAmount(double amount) { this.amount = amount; }
 
     @Override
     public String toString() {
-        String formattedDate = date != null ? date.format(DATE_TIME_FORMATTER) : "";
-        String formattedTime = time != null ? time.format(TIME_FORMATTER) : "";
-        String formattedType = type != null ? type.toUpperCase() : "";
-        String formattedDescription = description != null ? description : "";
-        String formattedVendor = vendor != null ? vendor : "";
-        String formattedAmount = String.format("%.2f", amount);
+        // Format date and time
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-        return formattedDate + "|" +
-                formattedTime + "|" +
-                formattedType + "|" +
-                formattedDescription + "|" +
-                formattedVendor + "|" +
-                formattedAmount;
+        String formattedDate = date.format(dateFormatter);
+        String formattedTime = time.format(timeFormatter);
+
+        // Format amount with two decimals and color it:
+        // - Red if negative (payment)
+        // - Green if positive (deposit)
+        String formattedAmount = String.format("%.2f", amount);
+        if (amount < 0) {
+            formattedAmount = RED + formattedAmount + RESET;
+        } else {
+            formattedAmount = GREEN + formattedAmount + RESET;
+        }
+
+        // Build a clean, human-readable transaction line
+        return String.format("%s | %s | %-8s | %-25s | %-15s | %s",
+                formattedDate,
+                formattedTime,
+                type,
+                description,
+                vendor,
+                formattedAmount
+        );
+    }
+
+    /**
+     * This method returns a plain CSV-formatted string (no colors)
+     * for writing to a .csv file.
+     */
+    public String toCsvString() {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        return String.format("%s|%s|%s|%s|%s|%.2f",
+                date.format(dateFormatter),
+                time.format(timeFormatter),
+                type,
+                description,
+                vendor,
+                amount
+        );
     }
 }

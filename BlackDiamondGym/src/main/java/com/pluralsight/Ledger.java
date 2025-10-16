@@ -1,78 +1,125 @@
 package com.pluralsight;
 
-import java.time.LocalTime;
-import java.util.List;
-import java.util.ArrayList;
-
 import java.time.LocalDate;
-import java.time.Year;
-import java.time.YearMonth;
+import java.time.LocalTime;   // ✅ Fix: Import LocalTime
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-
 
 public class Ledger {
     private List<Transaction> transactions = new ArrayList<>();
 
+    // ✅ Basic getters & setters
     public List<Transaction> getTransactions() {
         return transactions;
-        }
+    }
 
-    public void setTransactions(List<Transaction> list) {
-       transactions.clear();
-       if (list != null) transactions.addAll(list);
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
-    public void addDeposit (double amount, String description, String vendor) {
-        Transaction t = new Transaction(LocalDate.now(),LocalTime.now(), "DEPOSIT", amount, description, vendor);
-        transactions.add(t);
-    }
-    public void addPayment (double amount, String description, String vendor) {
-        Transaction t = new Transaction(LocalDate.now(),LocalTime.now(), "PAYMENT", -Math.abs(amount), description, vendor);
-        transactions.add(t);
-    }
+
+    // ✅ Show all transactions
     public List<Transaction> all() {
-        return new ArrayList<>(transactions);
+        return transactions;
     }
+
+    // ✅ Filter deposits (amount > 0)
     public List<Transaction> deposits() {
         return transactions.stream()
-                .filter(t -> "DEPOSIT".equalsIgnoreCase(t.getType()))
+                .filter(t -> t.getAmount() > 0)
                 .collect(Collectors.toList());
-    }
-    public List<Transaction> payments() {
-        return transactions.stream()
-                .filter(t -> "PAYMENT".equalsIgnoreCase(t.getType()))
-                .collect(Collectors.toList());
-    }
-    public List<Transaction> byVendor(String vendor) {
-        String v = vendor.toLowerCase();
-        return transactions.stream()
-                .filter(t -> t.getVendor() != null && t.getVendor().toLowerCase().contains(v))
-                .collect(Collectors.toList());
-    }
-    public List<Transaction> byDateRange (LocalDate start, LocalDate end) {
-        return transactions.stream()
-                .filter(t -> (t.getDate().isEqual(start) || t.getDate().isAfter(start)) && (t.getDate().isEqual(end) || t.getDate().isBefore(end)))
-                .collect(Collectors.toList());
-    }
-    // Capstone Accounting ledger code
-    public List<Transaction> monthToDate() {
-        YearMonth ym = YearMonth.now();
-        LocalDate start = ym.atDay(1);
-        LocalDate end = LocalDate.now();
-        return byDateRange(start,end);
-    }
-    public List<Transaction> previousMonth() {
-        YearMonth ym = YearMonth.now().minusMonths(1);
-        return byDateRange(ym.atDay(1), ym.atEndOfMonth());
     }
 
-    public List<Transaction> yearToDate() {
-        Year y = Year.now();
-        LocalDate start = y.atDay(1);
-        LocalDate end = LocalDate.now();
-        return byDateRange(start,end);
+    // ✅ Filter payments (amount < 0)
+    public List<Transaction> payments() {
+        return transactions.stream()
+                .filter(t -> t.getAmount() < 0)
+                .collect(Collectors.toList());
     }
+
+    // ✅ Transactions for the current month
+    public List<Transaction> monthToDate() {
+        LocalDate now = LocalDate.now();
+        return transactions.stream()
+                .filter(t -> t.getDate().getYear() == now.getYear() &&
+                        t.getDate().getMonth() == now.getMonth())
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Transactions from previous month
+    public List<Transaction> previousMonth() {
+        LocalDate prev = LocalDate.now().minusMonths(1);
+        return transactions.stream()
+                .filter(t -> t.getDate().getYear() == prev.getYear() &&
+                        t.getDate().getMonth() == prev.getMonth())
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Transactions for current year
+    public List<Transaction> yearToDate() {
+        int year = LocalDate.now().getYear();
+        return transactions.stream()
+                .filter(t -> t.getDate().getYear() == year)
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Transactions for previous year
     public List<Transaction> previousYear() {
-        Year y = Year.now().minusYears(1);
-        return byDateRange(y.atDay(1), y.atMonth(12).atEndOfMonth());
+        int prevYear = LocalDate.now().getYear() - 1;
+        return transactions.stream()
+                .filter(t -> t.getDate().getYear() == prevYear)
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Filter transactions by vendor
+    public List<Transaction> byVendor(String vendor) {
+        return transactions.stream()
+                .filter(t -> t.getVendor().equalsIgnoreCase(vendor))
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Filter by date range
+    public List<Transaction> byDateRange(LocalDate start, LocalDate end) {
+        return transactions.stream()
+                .filter(t -> !t.getDate().isBefore(start) && !t.getDate().isAfter(end))
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Overloaded version that takes a Transaction directly
+    public void addDeposit(Transaction transaction) {
+        transaction.setType("DEPOSIT");
+        transactions.add(transaction);
+    }
+
+    public void addPayment(Transaction transaction) {
+        transaction.setType("PAYMENT");
+        transactions.add(transaction);
+    }
+
+    // ✅ Overloaded version that takes amount, description, vendor
+    public void addDeposit(double amount, String description, String vendor) {
+        Transaction t = new Transaction(
+                LocalDate.now(),
+                LocalTime.now(),
+                "DEPOSIT",
+                amount,
+                description,
+                vendor
+        );
+        addDeposit(t);
+    }
+
+    public void addPayment(double amount, String description, String vendor) {
+        Transaction t = new Transaction(
+                LocalDate.now(),
+                LocalTime.now(),
+                "PAYMENT",
+                amount,
+                description,
+                vendor
+        );
+        addPayment(t);
     }
 }
+
+

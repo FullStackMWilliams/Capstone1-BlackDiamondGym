@@ -44,7 +44,7 @@ public class Membership {
     private List<String> addOns = new ArrayList<>();
     private String status = "ACTIVE";
 
-    public Membership() {}
+    public Membership(String part, String s) {}
 
     public Membership(String username, Plan plan, List<String> addOns) {
         this.username = username;
@@ -105,6 +105,10 @@ public class Membership {
     public String toString() {
         return plan + " | add-ons: " + addOns + " | status: " + status + " | total: $" + String.format("%.2f", getTotalPrice());
     }
+    public String getType() {
+        return plan != null ? plan.name() : "UNKNOWN";
+    }
+
 
 }
 

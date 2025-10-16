@@ -1,137 +1,99 @@
 package com.pluralsight;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pluralsight.Colors.*;
+
 public class FileManager {
 
-    public static final String USERS_FILE = "users.csv";
-    public static final String MEMBERS_FILE = "members.csv";
-    public static final String TRANSACTIONS_FILE = "transactions.csv";
+    private static final String USER_FILE = "users.csv";
+    private static final String MEMBERSHIP_FILE = "memberships.csv";
+    private static final String TRANSACTION_FILE = "transactions.csv";
 
+    // ✅ Make sure CSV files exist before use
     public static void ensureFiles() {
         try {
-            createIfMissing(USERS_FILE);
-            createIfMissing(MEMBERS_FILE);
-            createIfMissing(TRANSACTIONS_FILE);
-
-            List<User> users = readUsers();
-            boolean hasAdmin = users.stream().anyMatch(User::isAdmin);
-            if (!hasAdmin) {
-                users.add(new User("Markus","admin123","ADMIN"));
-                writeUsers(users);
-            }
-
-        } catch (Exception e) {
-            System.out.println(Colors.Red + "File set up error: " + e.getMessage() + Colors.RESET);
-
+            new File(USER_FILE).createNewFile();
+            new File(MEMBERSHIP_FILE).createNewFile();
+            new File(TRANSACTION_FILE).createNewFile();
+        } catch (IOException e) {
+            System.out.println(RED + "Error creating files: " + e.getMessage() + RESET);
         }
     }
 
-    public static void createIfMissing(String file) throws IOException {
-        Path path = Path.of(file);
-        if (!Files.exists(path)) {
-            Files.createFile(path);
-        }
-    }
+    // ✅ Read transactions from CSV
+    public static List<Transaction> readTransactions() {
+        List<Transaction> transactions = new ArrayList<>();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public static List<User> readUsers() {
-        List<User> list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(USERS_FILE))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(TRANSACTION_FILE))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] t = line.split(",", -1);
-                if (t.length >= 3) list.add(new User(t[0], t[1], t[2]));
-            }
-        } catch (IOException ignored) {}
-        return list;
-    }
-    public static void writeUsers(List<User> users) {
-        try(PrintWriter pw = new PrintWriter( (new FileWriter(USERS_FILE)))) {
-            for (User u : users) {
-                pw.println(u.getUsername() + "," + u.getPassword() + "," +u.getRole());
-            }
-        } catch (IOException e) {
-            System.out.println(Colors.Red + "Error writing users: " + e.getMessage() + Colors.RESET);
-        }
-    }
-    public static List<Membership> readMembership(){
-        List<Membership> list = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(MEMBERS_FILE))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] t = line.split(",",-1);
-                if (t.length >= 4) {
-                    String username = t[0];
-                    Membership.Plan plan = Membership.Plan.valueOf(t[1]);
-                    List<String> addons = Membership.parseAddOns(t[2]);
-                    String status = t[3];
-                    Membership m = new Membership(username,plan,addons);
-                    if ("CANCELED".equalsIgnoreCase(status)) m.cancel();
-                    list.add(m);
-                }
-            }
-        } catch (IOException ignored) {}
-        return list;
-    }
-    public static void writeMembership(List<Membership> memberships) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(MEMBERS_FILE))) {
-            for (Membership m : memberships) {
-                pw.println(
-                        m.getUsername() + "," +
-                        m.getPlan().name() + "," +
-                        Membership.addOnsToString(m.getAddOns()) + "," +
-                        m.getStatus()
-                );
+                if (line.trim().isEmpty()) continue;
+
+                String[] parts = line.split("\\|");
+                if (parts.length < 6) continue;
+
+                LocalDate date = LocalDate.parse(parts[0].trim(), dateFormatter);
+                LocalTime time = LocalTime.parse(parts[1].trim(), timeFormatter);
+                String type = parts[2].trim();
+                String description = parts[3].trim();
+                String vendor = parts[4].trim();
+                double amount = Double.parseDouble(parts[5].trim());
+
+                transactions.add(new Transaction(date, time, type, amount, description, vendor));
             }
         } catch (IOException e) {
-            System.out.println(Colors.Red + "Error writing membership: " + e.getMessage() + Colors.RESET);
+            System.out.println(RED + "Error reading transactions: " + e.getMessage() + RESET);
         }
+        return transactions;
     }
-    public static
-    List<Transaction> readTransactions() {
-        List<Transaction> list = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] t = line.split("\\|");
-                if (t.length >= 6) {
-                    LocalDate date = LocalDate.parse(t[0]);
-                    LocalTime time = LocalTime.parse(t[1]);
-                    String type = t[2];
-                    double amount = Double.parseDouble(t[3]);
-                    String description = t[4];
-                    String vendor = t[5];
-                    list.add(new Transaction(date, time, type, amount, description, vendor));
-                }
-            }
-        } catch (IOException ignored) {}
-        return list;
-    }
-    public static void writeTransaction(List<Transaction> txs) {
-        try(PrintWriter pw = new PrintWriter(new FileWriter(TRANSACTIONS_FILE))) {
-            for (Transaction t : txs) {
-                pw.println(
-                        t.getDate() + "|" +
-                        t.getTime() + "|" +
-                        t.getType() + "|" +
-                        t.getAmount() + "|" +
-                        sanitize(t.getDescription()) + "|" +
-                        sanitize(t.getVendor())
-                );
+
+    // ✅ Write transactions to CSV
+    public static void writeTransactions(List<Transaction> transactions) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(TRANSACTION_FILE))) {
+            for (Transaction t : transactions) {
+                pw.println(t.toString());
             }
         } catch (IOException e) {
-            System.out.println(Colors.Red + "Error writing transactions: " + e.getMessage() + Colors.RESET);
+            System.out.println(RED + "Error writing transactions: " + e.getMessage() + RESET);
         }
     }
-    private static String sanitize(String s) {
-        if (s == null) return "";
-        return s.replace(","," ");
+
+    // ✅ Display transactions (Formatted output with color logic)
+    public static void displayTransactions(List<Transaction> transactions) {
+        clear();
+        System.out.printf("%s%-15s%-12s%-12s%-20s%-25s%-15s%s%n",
+                BLACK_BACKGROUND + WHITE_BRIGHT,
+                "Date", "Time", "Type", "Vendor", "Description", "Amount", RESET);
+        System.out.println("--------------------------------------------------------------------------");
+
+        for (Transaction t : transactions) {
+            String amountColor = t.getType().equalsIgnoreCase("PAYMENT") ? RED : GREEN;
+            String formattedAmount = amountColor + String.format("%.2f", t.getAmount()) + RESET;
+
+            System.out.printf("%-15s%-12s%-12s%-20s%-25s%-15s%n",
+                    t.getDate(),
+                    t.getTime(),
+                    t.getType(),
+                    t.getVendor(),
+                    t.getDescription(),
+                    formattedAmount
+            );
+        }
+        System.out.println();
+    }
+
+    // ✅ Utility: clear console screen
+    public static void clear() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
 

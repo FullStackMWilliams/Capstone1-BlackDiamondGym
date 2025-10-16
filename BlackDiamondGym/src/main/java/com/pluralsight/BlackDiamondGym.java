@@ -143,7 +143,7 @@ public class BlackDiamondGym {
 
         FileManager.writeUsers(users);
         FileManager.writeMembership(memberships);
-        FileManager.writeTransaction(ledger.getTransactions());
+        FileManager.writeTransactions(ledger.getTransactions());
 
         clear();
         println(Aqua,"======================== WELCOME =====================");
@@ -223,7 +223,7 @@ public class BlackDiamondGym {
         ledger.addDeposit(ms.getTotalPrice(), "Membership add-ons update", "Membership");
 
         FileManager.writeMembership(memberships);
-        FileManager.writeTransaction(ledger.getTransactions());
+        FileManager.writeTransactions(ledger.getTransactions());
 
         printlnSuccess("Amenities updated. New monthly: $" + String.format("%.2f", ms.getTotalPrice()));
         pause();
@@ -297,7 +297,7 @@ public class BlackDiamondGym {
         String desc = prompt("Description: ");
         String vendor = prompt("Vendor: ");
         ledger.addDeposit(amt, desc, vendor);
-        FileManager.writeTransaction(ledger.getTransactions());
+        FileManager.writeTransactions(ledger.getTransactions());
         printlnSuccess("Deposit recorded.");
         pause();
     }
@@ -306,7 +306,7 @@ public class BlackDiamondGym {
         String desc = prompt("Description: ");
         String vendor = prompt("Vendor: ");
         ledger.addPayment(amt, desc, vendor);
-        FileManager.writeTransaction(ledger.getTransactions());
+        FileManager.writeTransactions(ledger.getTransactions());
         printlnSuccess("Payment recorded.");
         pause();
     }
