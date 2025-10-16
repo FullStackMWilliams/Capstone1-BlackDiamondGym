@@ -53,7 +53,7 @@ public class BlackDiamondGym {
     }
     private static void exitScreen() {
         clear();
-        println(DeepBlue,"===================================");
+        println(DeepBlue,"==================================================================================");
         println(OceanBlue,"                       THANK YOU FOR VISITING");
         println(BeigeBackground,"\nYour dedication shapes your strength.");
         println(BeigeBackground,"Come back soon to continue your journey!");
