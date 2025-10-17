@@ -8,11 +8,10 @@
 - [✨ Overview](#-overview)
 - [📦 Features](#-features)
 - [🧰 Technologies Used](#-technologies-used)
-- [🚀 Getting Started](#-getting-started)
 - [📂 Application Structure](#-application-structure)
 - [📊 Admin Dashboard (Interesting Code)](#-admin-dashboard-interesting-code)
 - [💡 Bonus: Member Features Explained](#-bonus-member-features-explained)
-- [📈 Future Enhancements](#-future-enhancements)
+
 
 ---
 
@@ -56,12 +55,53 @@ It’s a practical simulation of how gyms or subscription-based businesses manag
 
 ---
 
-## 🚀 Getting Started
+## 👷‍♂️ App Structure
+📁 src/com/pluralsight/
+│
+├─ BlackDiamondGym.java     # Main application & CLI menus
+├─ Admin.java               # Admin class (inherits from User)
+├─ Member.java              # Member class (inherits from User)
+├─ User.java                # Base user class
+├─ Membership.java          # Membership plan & pricing logic
+├─ Transaction.java         # Transaction model
+├─ Ledger.java              # Reporting and filtering engine
+├─ FileManager.java         # CSV read/write operations
+└─ Colors.java              # ANSI color palette for CLI UI
 
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/your-username/BlackDiamondGym.git
-cd BlackDiamondGym
+---
+
+## 💡 Interesting Code
+private static void adminDashboard(Admin admin) {
+    while (true) {
+        clear();
+        println(DeepBlue, "==================== 👑 ADMIN DASHBOARD =======================");
+        println(BeigeBackground, "👤 User: " + admin.getUsername());
+        println(BeigeBackground, "------------------------------------------------------");
+        println(null, "[1] 💵 Sales & Purchases");
+        println(null, "[2] 📊 View Reports (Ledger)");
+        println(null, "[3] 📈 App Info (Members/Revenue)");
+        println(null, "[4] 🚪 Logout");
+
+        String choice = prompt(Purple + "👉 Choose: " + RESET);
+        switch (choice) {
+            case "1" -> ledgerMenu();   // Record income & expenses
+            case "2" -> reportsMenu();  // Generate time-based and vendor reports
+            case "3" -> appInfo();      // View membership & revenue data
+            case "4" -> { return; }     // Exit dashboard
+            default -> printlnWarn("⚠️ Invalid option.");
+        }
+    }
+}
+
+---
+
+## 🏁 Final Notes
+
+BlackDiamondGym is more than a Java CLI project — it’s a foundational template for building real-world applications with modular structure, clean code, and meaningful business logic. Whether you’re a student, instructor, or developer, this project demonstrates how Java can power fully functional management systems.
+
+💪 "Strength is not just in the body — it's in the code." - BlackDiamond Gym
+
+
 
 <img width="1919" height="1125" alt="Screenshot 2025-10-17 010934" src="https://github.com/user-attachments/assets/30a0391f-dc78-43b2-b373-4d2402a87e97" />
 
