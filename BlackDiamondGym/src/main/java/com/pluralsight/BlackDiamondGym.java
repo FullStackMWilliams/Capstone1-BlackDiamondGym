@@ -246,7 +246,7 @@ public class BlackDiamondGym {
 
             String choice = prompt(Purple + "👉 Choose: " + RESET);
             switch (choice) {
-                case "1" -> ledgerMenu();
+                case "1" -> adminLedgerMenu();
                 case "2" -> reportsMenu();
                 case "3" -> appInfo();
                 case "4" -> { return; }
@@ -334,6 +334,29 @@ public class BlackDiamondGym {
                 case "R" -> reportsMenu();
                 case "0" -> viewing = false;
                 default  -> printlnWarn("Invalid option.");
+            }
+        }
+    }
+    private static void adminLedgerMenu() {
+        while (true) {
+            clear();
+            println(DeepBlue, "========================== 📁 LEDGER / ACCOUNTING ===================");
+            println(null, "[1] 💰 Record Deposit (Income)");
+            println(null, "[2] 🧾 Record Payment (Expenses)");
+            println(null, "[3] 📜 View All Transactions");
+            println(null, "[4] 📈 View Deposits Only");
+            println(null, "[5] 💸 View Payments Only");
+            println(null, "[6] 🔙 Back");
+
+            String c = prompt(BeigeBackground + "👉 Choose: " + RESET);
+            switch (c) {
+                case "1" -> recordDeposit();
+                case "2" -> recordPayment(); // ✅ This must call recordPayment()
+                case "3" -> showTransactions(ledger.all());
+                case "4" -> showTransactions(ledger.deposits());
+                case "5" -> showTransactions(ledger.payments());
+                case "6" -> { return; }
+                default -> printlnWarn("⚠️ Invalid option.");
             }
         }
     }
