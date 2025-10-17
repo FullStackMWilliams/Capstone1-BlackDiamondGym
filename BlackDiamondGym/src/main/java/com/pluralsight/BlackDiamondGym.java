@@ -382,7 +382,6 @@ public class BlackDiamondGym {
         printlnSuccess("Deposit recorded.");
         pause();
     }
-
     private static void recordPayment() {
         clear();
         println(Red, "💸 Make Payment (Debit)");
@@ -390,11 +389,17 @@ public class BlackDiamondGym {
         String desc = prompt("Description: ");
         String vendor = prompt("Vendor: ");
 
-        ledger.addPayment(Math.abs(amt), desc, vendor);
+        // ✅ Ensure payment is always negative
+        if (amt > 0) {
+            amt = -amt;
+        }
+
+        ledger.addPayment(amt, desc, vendor);
         FileManager.writeTransactions(ledger.getTransactions());
         printlnSuccess("Payment recorded.");
         pause();
     }
+
     private static void appInfo() {
         clear();
         long totalMembers = memberships.stream()
