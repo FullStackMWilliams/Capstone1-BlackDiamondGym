@@ -1,97 +1,112 @@
 package com.pluralsight;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import static com.pluralsight.Colors.*;
 
-/*
- * 🏋️‍♂️ BlackDiamondGym
- * -------------------------------------------------------
- * This is the main entry point for the BlackDiamond Gym CLI application.
- * It handles:
- *  - 🏠 Home screen navigation
- *  - 🔐 Login and authentication
- *  - 🧑‍🤝‍🧑 Member sign-up and membership creation
- *  - 🧑‍💼 Admin login and dashboard access
- *
- * All data is read from and written to CSV files using FileManager.
- * Transactions are handled by the Ledger class.
- */
+//            BlackDiamondGym – Ledger-first CLI with Login/Signup Submenu
+
 public class BlackDiamondGym {
 
-
+    //
     private static final Scanner in = new Scanner(System.in);
-
-    // Store users and memberships in memory
+    private static final Ledger ledger = new Ledger();
     private static List<User> users = new ArrayList<>();
     private static List<Membership> memberships = new ArrayList<>();
-    private static final Ledger ledger = new Ledger();
+
+    // Column widths (tweak if needed)
+    private static final int W_DATE = 12;
+    private static final int W_TIME = 10;
+    private static final int W_TYPE = 10;
+    private static final int W_AMT  = 15;
+    private static final int W_VENDOR = 28;
+    private static final int W_DESC   = 28;
 
     public static void main(String[] args) {
-
-        // Ensure CSV files exist before we do anything
+        // Ensure files exist and load data
         FileManager.ensureFiles();
-
-        // Load existing data from CSV files
         users = FileManager.readUsers();
         memberships = FileManager.readMembership();
         ledger.setTransactions(FileManager.readTransactions());
 
-        // Main app loop
-        while (true) {
-            displayHomeScreen();
-            String choice = prompt(Seafoam + "👉 Enter your choice: " + RESET);
+        // Main loop (HOME MENU per requirements)
+        boolean running = true;
+        while (running) {
+            showHomeMenu();
+            String choice = prompt(Seafoam + "👉 Enter your choice: " + RESET).trim().toUpperCase();
+
             switch (choice) {
-                case "1" -> loginFlow();
-                case "2" -> signUpFlow();
-                case "3" -> {
-                    exitScreen();
-                    return;
-                }
-                default -> printlnWarn("⚠️ Invalid option. Try again.");
+                case "D" -> recordDeposit();
+                case "P" -> recordPayment();
+                case "L" -> ledgerMenu();
+                case "M" -> authMenu();            // NEW: login/signup submenu
+                case "X" -> { exitScreen(); running = false; }
+                default  -> printlnWarn("Invalid option. Try again.");
             }
         }
     }
 
-    /*
-     * Displays the main home screen with a welcoming message and options.
-     */
-    public static void displayHomeScreen() {
+
+    //       HOME SCREEN
+
+    private static void showHomeMenu() {
         clear();
-        System.out.println(BeigeBackground + "========================================" + RESET);
-        System.out.println(DeepBlue + " 🏋️‍♂️ Welcome to BlackDiamond Gym " + RESET);
-        System.out.println(BeigeBackground + "========================================" + RESET);
-        System.out.println(Seafoam + "\n🌿 Your journey to strength and balance begins here." + RESET);
-        System.out.println(Gray + "\n-----------------------------------------------------" + RESET);
-        System.out.println(Gray + "[1]" + RESET + " 🔐 Login");
-        System.out.println(Gray + "[2]" + RESET + " 🧑‍💻 Sign Up");
-        System.out.println(Gray + "[3]" + RESET + " 🚪 Exit");
-        System.out.println(Gray + "-------------------------------------------------------" + RESET);
-        System.out.println(Amber + "💡 \"Life is easier when you're stronger.\" — Markus" + RESET);
+        System.out.println(BeigeBackground + "=================================================" + RESET);
+        System.out.println(DeepBlue + "   🏋️ BlackDiamond Gym — Main Menu" + RESET);
+        System.out.println(BeigeBackground + "=================================================" + RESET);
+        System.out.println();
+        System.out.println("[D] 💵 Add Deposit");
+        System.out.println("[P] 💸 Make Payment (Debit)");
+        System.out.println("[L] 📜 Ledger");
+        System.out.println("[M] 👤 Member / Admin Login");
+        System.out.println("[X] 🚪 Exit");
+        System.out.println();
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("\"Life is easier when you're stronger\"- Markus");
     }
 
-    /*
-     * Displays a farewell message before exiting.
-     */
     private static void exitScreen() {
         clear();
-        println(DeepBlue, "==================================================================================");
-        println(OceanBlue, "🙏 THANK YOU FOR VISITING BLACKDIAMOND GYM 🙏");
-        println(BeigeBackground, "\n🌟 Your dedication shapes your strength.");
-        println(BeigeBackground, "Come back soon to continue your journey!");
-        println(Amber, "\n— The BlackDiamondGym Team 🏋️‍♂️");
+        println(DeepBlue, "===============================================");
+        println(OceanBlue, "🙏 Thanks for using BlackDiamond Gym Ledger!");
+        println(BeigeBackground, "Come back soon to continue your journey. 💪");
+        println(Amber, "— The BlackDiamond Team");
+        println(DeepBlue, "===============================================");
     }
 
-    /*
-     * 🔐 Handles user login for both members and admins.
-     */
+
+    //   LOGIN / SIGNUP SUBMENU
+
+    private static void authMenu() {
+        boolean sub = true;
+        while (sub) {
+            clear();
+            println(DeepBlue, "===================== 👥 Login / Signup =====================");
+            System.out.println("[1] 🔐 Login");
+            System.out.println("[2] 🧑‍💻 Sign Up");
+            System.out.println("[0] 🔙 Back");
+            System.out.println();
+            String c = prompt(Seafoam + "👉 Choose: " + RESET).trim();
+
+            switch (c) {
+                case "1" -> loginFlow();
+                case "2" -> signUpFlow();
+                case "0" -> sub = false;
+                default  -> printlnWarn("Invalid option.");
+            }
+        }
+    }
+
+
+    //        AUTH FLOWS
+
     private static void loginFlow() {
         clear();
         println(Olive, "===================== 🔐 LOGIN ============================");
         String username = prompt("👤 Username: ");
         String password = prompt("🔑 Password: ");
 
-        // Find a matching user
         User found = users.stream()
                 .filter(u -> u.getUsername().equalsIgnoreCase(username) && u.getPassword().equals(password))
                 .findFirst().orElse(null);
@@ -102,13 +117,10 @@ public class BlackDiamondGym {
             return;
         }
 
-        //  Admin access
         if (found.isAdmin()) {
-            adminDashboard((Admin) toAdmin(found));
-        }
-        //  Member access
-        else {
-            Member m = toMember(found);
+            adminDashboard(new Admin(found.getUsername(), found.getPassword()));
+        } else {
+            Member m = new Member(found.getUsername(), found.getPassword());
             Membership mm = memberships.stream()
                     .filter(ms -> ms.getUsername().equalsIgnoreCase(m.getUsername()))
                     .findFirst().orElse(null);
@@ -117,61 +129,42 @@ public class BlackDiamondGym {
         }
     }
 
-
-     //  Handles new user sign-ups and membership creation.
-
     private static void signUpFlow() {
         clear();
         println(Amber, "=================== 🧑‍💻 SIGN UP ====================");
 
-        //  Username selection
         String username = prompt("📛 Choose a username: ").trim();
-        if (username.isEmpty()) {
-            printlnWarn("⚠️ Username cannot be empty.");
-            pause();
-            return;
-        }
+        if (username.isEmpty()) { printlnWarn("Username cannot be empty."); pause(); return; }
         boolean exists = users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
-        if (exists) {
-            printlnWarn("⚠️ Username already exists. Please try another.");
-            pause();
-            return;
-        }
+        if (exists) { printlnWarn("Username already exists. Try another."); pause(); return; }
 
-        // 🔑 Password selection
-        String password = prompt("🔑 Choose a password: ");
-        if (password.trim().isEmpty()) {
-            printlnWarn("⚠️ Password cannot be empty.");
-            pause();
-            return;
-        }
+        String password = prompt("🔑 Choose a password: ").trim();
+        if (password.isEmpty()) { printlnWarn("Password cannot be empty."); pause(); return; }
 
-        // 📦 Choose membership plan
+        // Plan
         println(null, "\n💳 Choose a base membership:");
-        println(null, "1️⃣ BASIC ($29.99)");
-        println(null, "2️⃣ PREMIUM ($49.99)");
-        println(null, "3️⃣ VIP ($79.99)");
+        println(null, "1) BASIC ($29.99)");
+        println(null, "2) PREMIUM ($49.99)");
+        println(null, "3) VIP ($79.99)");
         String planChoice = prompt("👉 Enter (1-3): ");
         Membership.Plan plan = switch (planChoice) {
             case "1" -> Membership.Plan.BASIC;
             case "2" -> Membership.Plan.PREMIUM;
             case "3" -> Membership.Plan.VIP;
-            default -> Membership.Plan.BASIC;
+            default  -> Membership.Plan.BASIC;
         };
 
-        // 🏷️ Choose add-ons
-        println(null, "\n✨ Add-ons (type the numbers separated by commas, or press Enter for none):");
-        println(null, "1️⃣ Towel Service ($5)");
-        println(null, "2️⃣ Gym Class ($25)");
-        println(null, "3️⃣ Personal Trainer ($100)");
-        println(null, "4️⃣ Pool ($10)");
-        println(null, "5️⃣ Sauna ($20)");
-
+        // Add-ons
+        println(null, "\n✨ Add-ons (comma separated numbers, or Enter for none):");
+        println(null, "1) Towel Service ($5)");
+        println(null, "2) Gym Class ($25)");
+        println(null, "3) Personal Trainer ($100)");
+        println(null, "4) Pool ($10)");
+        println(null, "5) Sauna ($20)");
         String addonInput = prompt("🛠️ Choose add-ons (1-5): ");
         List<String> addOns = new ArrayList<>();
         if (!addonInput.trim().isEmpty()) {
-            String[] picks = addonInput.split(",");
-            for (String p : picks) {
+            for (String p : addonInput.split(",")) {
                 switch (p.trim()) {
                     case "1" -> addOns.add("Towel Service");
                     case "2" -> addOns.add("Gym Class");
@@ -182,41 +175,29 @@ public class BlackDiamondGym {
             }
         }
 
-        // 🧑‍🤝‍🧑 Create new member + membership
+        // Create and persist
         Member newMember = new Member(username, password);
         Membership newMembership = new Membership(username, plan, addOns);
-
         users.add(newMember);
         memberships.add(newMembership);
 
-        // 💰 Record a deposit transaction for the membership purchase
         ledger.addDeposit(newMembership.getTotalPrice(), "New membership (" + plan + ")", "Membership");
-
-        // 📁 Save to CSV
         FileManager.writeUsers(users);
         FileManager.writeMembership(memberships);
         FileManager.writeTransactions(ledger.getTransactions());
 
-        // 🎉 Confirmation screen
         clear();
         println(Aqua, "======================== 🎉 WELCOME =====================");
         println(null, "🙌 Welcome, " + username + "!");
         println(null, "📦 Plan: " + plan);
         println(null, "🧰 Add-ons: " + (addOns.isEmpty() ? "None" : addOns));
         println(null, "💵 Monthly Total: $" + String.format("%.2f", newMembership.getTotalPrice()));
-        println(BeigeBackground, "\n✅ Your account has been created. Please login from the home screen.");
+        println(BeigeBackground, "\n✅ Your account has been created. Please login from the Home menu (M).");
         pause();
     }
-    /**
-     * 👤 Member Dashboard
-     * ---------------------------------------------------------
-     * Displays the main dashboard for a logged-in member.
-     * Allows them to:
-     *  - ✅ View membership details
-     *  - ➕ Add amenities
-     *  - ❌ Cancel membership
-     *  - 🚪 Logout
-     */
+
+    //   MEMBER / ADMIN MENUS
+
     private static void memberDashboard(Member member) {
         while (true) {
             clear();
@@ -224,13 +205,10 @@ public class BlackDiamondGym {
             println(Aqua, "💪 Welcome, " + member.getUsername() + "!");
             println(DeepBlue, "--------------------------------------------------------");
 
-            // 🔍 Find this member's membership info
             Membership ms = memberships.stream()
                     .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
-                    .findFirst()
-                    .orElse(null);
+                    .findFirst().orElse(null);
 
-            // 📋 Display membership info or show a message if none
             if (ms == null) {
                 println(Red, "⚠️ No active membership found.");
             } else {
@@ -241,59 +219,63 @@ public class BlackDiamondGym {
             }
 
             println(BeigeBackground, "-------------------------------------");
-            println(null, "[1] ➕ Add Amenities");
-            println(null, "[2] ❌ Cancel Membership");
-            println(null, "[3] 🚪 Logout");
+            System.out.println("[1] ➕ Add Amenities");
+            System.out.println("[2] ❌ Cancel Membership");
+            System.out.println("[3] 🔙 Logout");
+            String choice = prompt(Seafoam + "👉 Choose: " + RESET);
 
-            String choice = prompt(Seafoam + "👉 Choose an option: " + RESET);
             switch (choice) {
                 case "1" -> addAmenities(member);
                 case "2" -> cancelMembership(member);
-                case "3" -> { return; } // 🔙 Return to home screen
-                default  -> printlnWarn("⚠️ Invalid option.");
+                case "3" -> { return; }
+                default  -> printlnWarn("Invalid option.");
             }
         }
     }
-    /**
-     * ➕ Add Amenities to a Membership
-     * ---------------------------------------------------------
-     * Prompts the member to choose additional amenities and updates their plan.
-     * Automatically updates their total monthly price and records the transaction.
-     */
+
+    private static void adminDashboard(Admin admin) {
+        while (true) {
+            clear();
+            println(DeepBlue, "==================== 👑 ADMIN DASHBOARD =======================");
+            println(BeigeBackground, "👤 User: " + admin.getUsername());
+            println(BeigeBackground, "------------------------------------------------------");
+            System.out.println("[1] 💵 Sales & Purchases (Record deposit/payment)");
+            System.out.println("[2] 📊 View Reports (Ledger)");
+            System.out.println("[3] 📈 App Info (Members/Revenue)");
+            System.out.println("[4] 🔙 Logout");
+
+            String choice = prompt(Purple + "👉 Choose: " + RESET);
+            switch (choice) {
+                case "1" -> ledgerMenu();
+                case "2" -> reportsMenu();
+                case "3" -> appInfo();
+                case "4" -> { return; }
+                default -> printlnWarn("Invalid option.");
+            }
+        }
+    }
+
+
+    //  MEMBER MODIFICATION
+
     private static void addAmenities(Member member) {
         Membership ms = memberships.stream()
                 .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
-                .findFirst()
-                .orElse(null);
+                .findFirst().orElse(null);
 
-        if (ms == null) {
-            printlnWarn("⚠️ No membership to modify.");
-            pause();
-            return;
-        }
-        if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
-            printlnWarn("⚠️ Cannot modify a canceled membership.");
-            pause();
-            return;
-        }
+        if (ms == null) { printlnWarn("No membership to modify."); pause(); return; }
+        if ("CANCELED".equalsIgnoreCase(ms.getStatus())) { printlnWarn("Cannot modify a canceled membership."); pause(); return; }
 
         println(null, "\n🛠️ Select amenities to add (comma separated):");
-        println(null, "1️⃣ Towel Service ($5)");
-        println(null, "2️⃣ Gym Class ($25)");
-        println(null, "3️⃣ Personal Trainer ($100)");
-        println(null, "4️⃣ Pool Access ($10)");
-        println(null, "5️⃣ Sauna Access ($20)");
-
+        println(null, "1) Towel Service $5");
+        println(null, "2) Gym Class $25");
+        println(null, "3) Personal Trainer $100");
+        println(null, "4) Pool $10");
+        println(null, "5) Sauna $20");
         String input = prompt("👉 Choose your amenities (1-5): ");
-        if (input.trim().isEmpty()) {
-            printlnWarn("⚠️ No changes made.");
-            pause();
-            return;
-        }
+        if (input.trim().isEmpty()) { printlnWarn("No changes made."); pause(); return; }
 
-        // 🧩 Process selected amenities
-        String[] picks = input.split(",");
-        for (String p : picks) {
+        for (String p : input.split(",")) {
             switch (p.trim()) {
                 case "1" -> ms.addAddOn("Towel Service");
                 case "2" -> ms.addAddOn("Gym Class");
@@ -303,220 +285,116 @@ public class BlackDiamondGym {
             }
         }
 
-        // 💰 Record this as a deposit transaction (income for the gym)
         ledger.addDeposit(ms.getTotalPrice(), "Membership add-ons update", "Membership");
-
-        // 💾 Save changes to file
         FileManager.writeMembership(memberships);
         FileManager.writeTransactions(ledger.getTransactions());
 
-        printlnSuccess("✅ Amenities updated. New monthly: $" + String.format("%.2f", ms.getTotalPrice()));
+        printlnSuccess("Amenities updated. New monthly: $" + String.format("%.2f", ms.getTotalPrice()));
         pause();
     }
 
-    /**
-     * ❌ Cancel Membership
-     * ---------------------------------------------------------
-     * Allows a member to cancel their membership.
-     * The status is updated to "CANCELED" and persisted to the CSV.
-     */
     private static void cancelMembership(Member member) {
         Membership ms = memberships.stream()
                 .filter(m -> m.getUsername().equalsIgnoreCase(member.getUsername()))
-                .findFirst()
-                .orElse(null);
+                .findFirst().orElse(null);
 
-        if (ms == null) {
-            printlnWarn("⚠️ No membership to cancel.");
-            pause();
-            return;
-        }
-        if ("CANCELED".equalsIgnoreCase(ms.getStatus())) {
-            printlnWarn("⚠️ Membership already canceled.");
-            pause();
-            return;
-        }
+        if (ms == null) { printlnWarn("No membership to cancel."); pause(); return; }
+        if ("CANCELED".equalsIgnoreCase(ms.getStatus())) { printlnWarn("Membership already canceled."); pause(); return; }
 
         String sure = prompt("⚠️ Are you sure you want to cancel? (yes/no): ");
         if (sure.equalsIgnoreCase("yes")) {
             ms.cancel();
             FileManager.writeMembership(memberships);
-            printlnSuccess("✅ Membership canceled successfully.");
+            printlnSuccess("Membership canceled.");
         } else {
-            printlnWarn("❎ Cancellation aborted.");
+            printlnWarn("Cancellation aborted.");
         }
         pause();
     }
-    /**
-     * 👑 Admin Dashboard
-     * ---------------------------------------------------------
-     * The main admin hub that provides access to:
-     *  - 💵 Sales & Purchases (Ledger management)
-     *  - 📊 Reports & Transactions
-     *  - 📈 App Information (Membership and revenue stats)
-     */
-    private static void adminDashboard(Admin admin) {
-        while (true) {
-            clear();
-            println(DeepBlue, "==================== 👑 ADMIN DASHBOARD =======================");
-            println(BeigeBackground, "👤 User: " + admin.getUsername());
-            println(BeigeBackground, "------------------------------------------------------");
-            println(null, "[1] 💵 Sales & Purchases");
-            println(null, "[2] 📊 View Reports (Ledger)");
-            println(null, "[3] 📈 App Info (Members/Revenue)");
-            println(null, "[4] 🚪 Logout");
 
-            String choice = prompt(Purple + "👉 Choose: " + RESET);
-            switch (choice) {
-                case "1" -> ledgerMenu();
-                case "2" -> reportsMenu();
-                case "3" -> appInfo();
-                case "4" -> { return; }
-                default -> printlnWarn("⚠️ Invalid option.");
-            }
-        }
-    }
+    //    LEDGER & REPORTS
 
-    /**
-     * 📁 Ledger Menu
-     * ---------------------------------------------------------
-     * Admin can record new transactions or view existing ones:
-     *  - 💰 Record deposits (income)
-     *  - 🧾 Record payments (expenses)
-     *  - 📜 View transactions
-     */
     private static void ledgerMenu() {
-        while (true) {
+        boolean viewing = true;
+        while (viewing) {
             clear();
-            println(DeepBlue, "========================== 📁 LEDGER / ACCOUNTING ===================");
-            println(null, "[1] 💰 Record Deposit (Income)");
-            println(null, "[2] 🧾 Record Payment (Expenses)");
-            println(null, "[3] 📜 View All Transactions");
-            println(null, "[4] 📈 View Deposits Only");
-            println(null, "[5] 💸 View Payments Only");
-            println(null, "[6] 🔙 Back");
+            println(DeepBlue, "====================== 📊 LEDGER ======================");
+            System.out.println("[A] 📁 All");
+            System.out.println("[D] 💵 Deposits");
+            System.out.println("[P] 💳 Payments");
+            System.out.println("[R] 📈 Reports");
+            System.out.println("[0] 🔙 Back");
+            System.out.println();
 
-            String c = prompt(BeigeBackground + "👉 Choose: " + RESET);
+            String c = prompt(Seafoam + "👉 Choose: " + RESET).trim().toUpperCase();
             switch (c) {
-                case "1" -> recordDeposit();
-                case "2" -> recordPayment();
-                case "3" -> showTransactions(ledger.all());
-                case "4" -> showTransactions(ledger.deposits());
-                case "5" -> showTransactions(ledger.payments());
-                case "6" -> { return; }
-                default -> printlnWarn("⚠️ Invalid option.");
+                case "A" -> showTransactions(ledger.all());
+                case "D" -> showTransactions(ledger.deposits());
+                case "P" -> showTransactions(ledger.payments());
+                case "R" -> reportsMenu();
+                case "0" -> viewing = false;
+                default  -> printlnWarn("Invalid option.");
             }
         }
     }
 
-    /*
-     *  Record a new deposit transaction (income)
-     */
-    private static void recordDeposit() {
-        double amt = parseDouble(prompt("💵 Enter Amount: $"));
-        String desc = prompt("📝 Description: ");
-        String vendor = prompt("🏢 Vendor: ");
-
-        ledger.addDeposit(amt, desc, vendor);
-        FileManager.writeTransactions(ledger.getTransactions());
-        printlnSuccess("Deposit recorded successfully.");
-        pause();
-    }
-
-    /*
-     *  Record a new payment transaction (expense)
-     */
-    private static void recordPayment() {
-        double amt = parseDouble(prompt("💸 Enter Amount: $"));
-        String desc = prompt("📝 Description: ");
-        String vendor = prompt("🏢 Vendor: ");
-
-        ledger.addPayment(amt, desc, vendor);
-        FileManager.writeTransactions(ledger.getTransactions());
-        printlnSuccess(" Payment recorded successfully.");
-        pause();
-    }
-    private static void showTransactions(List<Transaction> list) {
-        clear();
-
-        // 📊 Print header
-        System.out.println(Gray + "=========================================================================================================================");
-        System.out.printf("%-15s %-10s %-12s %-15s %-30s %-20s%n",
-                "📅 Date", "⏰ Time", "📂 Type", "💲 Amount", "🏢 Vendor", "📝 Description");
-        System.out.println(Gray + "=========================================================================================================================");
-
-        for (Transaction t : list) {
-            // Format each field with fixed width
-            String date = String.format("%-15.15s", t.getDate().toString());
-            String time = String.format("%-10.10s", t.getTime().toString());
-            String type = String.format("%-12.12s", t.getType());
-            String amountColor = t.getAmount() < 0 ? Red : Green;
-            String amount = String.format("%-15.2f", t.getAmount());
-
-            String vendor = String.format("%-30.30s", t.getVendor());         // 30 chars max
-            String description = String.format("%-20.20s", t.getDescription()); // 20 chars max
-
-            // Print row
-            System.out.printf("%-15s %-10s %-12s %s%-15s%s %-30s %-20s%n",
-                    date, time, type, amountColor, amount, RESET, vendor, description);
-        }
-
-        System.out.println(Gray + "=========================================================================================================================");
-        pause();
-    }
-
-
-
-    /*
-     * Reports Menu
-     * ---------------------------------------------------------
-     * Allows the admin to view transaction summaries:
-     *   Month-to-date / Previous month
-     *   Year-to-date / Previous year
-     *   Search by vendor or date range
-     */
     private static void reportsMenu() {
-        while (true) {
+        boolean reporting = true;
+        while (reporting) {
             clear();
-            println(DeepBlue, "================================= 📊 REPORTS =========================");
-            println(null, "[1] 📆 Month-to-Date");
-            println(null, "[2] 🗓️ Previous Month");
-            println(null, "[3] 📅 Year-to-Date");
-            println(null, "[4] 📉 Previous Year");
-            println(null, "[5] 🔎 Search by Vendor");
-            println(null, "[6] ⏱️ Search by Date Range");
-            println(null, "[7] 📜 View All Transactions");
-            println(null, "[8] 🔙 Back");
+            println(DeepBlue, "======================== 📈 REPORTS ========================");
+            System.out.println("[1] 📆 Month To Date");
+            System.out.println("[2] 🗓 Previous Month");
+            System.out.println("[3] 📅 Year To Date");
+            System.out.println("[4] 📉 Previous Year");
+            System.out.println("[5] 🔍 Search by Vendor");
+            System.out.println("[0] 🔙 Back");
+            System.out.println();
 
-            String c = prompt(Seafoam + "👉 Choose: " + RESET);
+            String c = prompt(Seafoam + "👉 Choose: " + RESET).trim();
             switch (c) {
                 case "1" -> showTransactions(ledger.monthToDate());
                 case "2" -> showTransactions(ledger.previousMonth());
                 case "3" -> showTransactions(ledger.yearToDate());
                 case "4" -> showTransactions(ledger.previousYear());
                 case "5" -> {
-                    String vendor = prompt("🏢 Vendor contains: ");
+                    String vendor = prompt("Vendor (case-insensitive contains): ");
                     showTransactions(ledger.byVendor(vendor));
                 }
-                case "6" -> {
-                    LocalDate start = LocalDate.parse(prompt("📅 Start date (YYYY-MM-DD): "));
-                    LocalDate end = LocalDate.parse(prompt("📅 End date (YYYY-MM-DD): "));
-                    showTransactions(ledger.byDateRange(start, end));
-                }
-                case "7" -> showTransactions(ledger.all());
-                case "8" -> { return; }
-                default -> printlnWarn(" Invalid option.");
+                case "0" -> reporting = false;
+                default  -> printlnWarn("Invalid option.");
             }
         }
     }
 
-    /*
-     *  Application Info
-     * ---------------------------------------------------------
-     * Displays basic metrics about the gym's performance:
-     *  Active members
-     *  Projected monthly recurring revenue (MRR)
-     */
+
+    //      ADD / PAYMENT
+
+    private static void recordDeposit() {
+        clear();
+        println(Green, "💰 Add Deposit");
+        double amt = parseDouble(prompt("Amount ($): "));
+        String desc = prompt("Description: ");
+        String vendor = prompt("Vendor: ");
+
+        ledger.addDeposit(Math.abs(amt), desc, vendor);
+        FileManager.writeTransactions(ledger.getTransactions());
+        printlnSuccess("Deposit recorded.");
+        pause();
+    }
+
+    private static void recordPayment() {
+        clear();
+        println(Red, "💸 Make Payment (Debit)");
+        double amt = parseDouble(prompt("Amount ($): "));
+        String desc = prompt("Description: ");
+        String vendor = prompt("Vendor: ");
+
+        ledger.addPayment(Math.abs(amt), desc, vendor);
+        FileManager.writeTransactions(ledger.getTransactions());
+        printlnSuccess("Payment recorded.");
+        pause();
+    }
     private static void appInfo() {
         clear();
         long totalMembers = memberships.stream()
@@ -533,51 +411,81 @@ public class BlackDiamondGym {
         pause();
     }
 
-    // Helper Methods for converting users
-    private static Admin toAdmin(User u) {
-        return new Admin(u.getUsername(), u.getPassword());
+
+    //      TABLE DISPLAY
+
+    private static void showTransactions(List<Transaction> list) {
+        clear();
+
+        // Newest first by date then time
+        list.sort(Comparator
+                .comparing(Transaction::getDate)
+                .thenComparing(Transaction::getTime)
+                .reversed());
+
+        // Header
+        System.out.println(Gray + "========================================================================================================" + RESET);
+        System.out.printf(
+                BLACK_BOLD + "%-" + W_DATE + "s %-" + W_TIME + "s %-" + W_TYPE + "s %-" + W_AMT + "s %-" + W_VENDOR + "s %-" + W_DESC + "s%n" + RESET,
+                "📅 Date", "⏰ Time", "📂 Type", "💵 Amount", "🏢 Vendor", "📝 Description"
+        );
+        System.out.println(Gray + "--------------------------------------------------------------------------------------------------------" + RESET);
+
+        // Rows (truncate, then pad -> color only the amount)
+        for (Transaction t : list) {
+            String date = pad(trunc(safe(t.getDate())), W_DATE);
+            String time = pad(trunc(safe(t.getTime())), W_TIME);
+            String type = pad(trunc(safe(t.getType())), W_TYPE);
+
+            String rawAmount = String.format("$%,.2f", t.getAmount());            // build first
+            String amtPadded = pad(trunc(rawAmount), W_AMT);                      // pad without color
+            String amtColored = (t.getAmount() < 0 ? Red : Green) + amtPadded + RESET;
+
+            String vendor = pad(trunc(safe(t.getVendor()), W_VENDOR), W_VENDOR);  // max W_VENDOR
+            String desc   = pad(trunc(safe(t.getDescription()), W_DESC), W_DESC); // max W_DESC
+
+            System.out.printf("%s %s %s %s %s %s%n",
+                    date, time, type, amtColored, vendor, desc);
+        }
+
+        System.out.println(Gray + "========================================================================================================" + RESET);
+        pause();
     }
 
-    private static Member toMember(User u) {
-        return new Member(u.getUsername(), u.getPassword());
-    }
 
-    // Prompt for input
+    //         UTILITIES/HELPER METHODS
     private static String prompt(String msg) {
         System.out.print(msg);
         return in.nextLine();
     }
-
-    //  Print with color (optional)
     private static void println(String color, String s) {
         if (color == null) System.out.println(s);
         else System.out.println(color + s + RESET);
     }
-
-    // classes for  Warnings, Errors, Success messages
     private static void printlnWarn(String s) { println(Yellow, "⚠️ " + s); }
     private static void printlnError(String s) { println(Red, "❌ " + s); }
     private static void printlnSuccess(String s) { println(Green, "✅ " + s); }
-
-    // Clears the screen for a fresh page view/almost like reset for colors
     private static void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
-
-    // System pauses for user input before continuing/ helps app flow
     private static void pause() {
         System.out.println(OceanBlue + "\n🔄 Press ENTER to continue..." + RESET);
         in.nextLine();
     }
-
-    //  Safe double parsing with fallback exception for user input
     private static double parseDouble(String input) {
-        try {
-            return Double.parseDouble(input.trim());
-        } catch (Exception e) {
-            printlnWarn("⚠️ Invalid number. Using 0.0");
-            return 0.0;
-        }
+        try { return Double.parseDouble(input.trim()); }
+        catch (Exception e) { printlnWarn("Invalid number. Using 0.0"); return 0.0; }
+    }
+
+    // ---------- Formatting helpers (truncate THEN pad) ----------
+    private static String safe(Object o) { return (o == null) ? "" : o.toString(); }
+    private static String trunc(String s) { return s == null ? "" : s; } // generic
+    private static String trunc(String s, int max) {
+        if (s == null) return "";
+        return s.length() <= max ? s : s.substring(0, Math.max(0, max - 3)) + "...";
+    }
+    private static String pad(String s, int width) {
+        return String.format("%-" + width + "s", s == null ? "" : s);
     }
 }
