@@ -63,16 +63,16 @@ public class BlackDiamondGym {
         System.out.println("[X] 🚪 Exit");
         System.out.println();
         System.out.println("--------------------------------------------------------------------------------------");
-        System.out.println("\"Life is easier when you're stronger\"- Markus");
+        System.out.println(Amber + "\"The only way to do great work is to love what you do\". - Steve Jobs");
     }
 
     private static void exitScreen() {
         clear();
-        println(DeepBlue, "===============================================");
-        println(OceanBlue, "🙏 Thanks for using BlackDiamond Gym Ledger!");
-        println(BeigeBackground, "Come back soon to continue your journey. 💪");
+        println(DeepBlue, "=====================================================================================");
+        println(OceanBlue, "🙏 Thanks for visiting BlackDiamond Gym!");
+        println(BeigeBackground, "\"Life is easier when you're stronger\" - Markus. So come back soon! 💪");
         println(Amber, "— The BlackDiamond Team");
-        println(DeepBlue, "===============================================");
+        println(DeepBlue, "=====================================================================================");
     }
 
 
