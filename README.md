@@ -92,9 +92,8 @@ private static void adminDashboard(Admin admin) {
         }
     }
 }
-
+````
 ---
-
 ## 🏁 Final Notes
 
 BlackDiamondGym is more than a Java CLI project — it’s a foundational template for building real-world applications with modular structure, clean code, and meaningful business logic. Whether you’re a student, instructor, or developer, this project demonstrates how Java can power fully functional management systems.
