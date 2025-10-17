@@ -76,7 +76,7 @@ public class BlackDiamondGym {
     }
 
 
-    //   LOGIN / SIGNUP SUBMENU
+    //      LOGIN / SIGNUP SUBMENU
 
     private static void authMenu() {
         boolean sub = true;
