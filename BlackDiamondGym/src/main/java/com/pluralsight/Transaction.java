@@ -77,9 +77,9 @@ public class Transaction {
         );
     }
 
-    /**
-     * This method returns a plain CSV-formatted string (no colors)
-     * for writing to a .csv file.
+    /*
+     This method returns a plain CSV-formatted string (no colors)
+      for writing to a .csv file.
      */
     public String toCsvString() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

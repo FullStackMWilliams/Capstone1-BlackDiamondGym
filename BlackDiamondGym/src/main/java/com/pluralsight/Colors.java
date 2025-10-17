@@ -14,5 +14,6 @@ public class Colors {
     public static final String Green = "\u001B[32m";
     public static final String Red = "\u001B[31m";
     public static final String Yellow = "\u001B[33m";
+    public static final String BLACK_BOLD = "\u001B[1;30m";
 
 }
