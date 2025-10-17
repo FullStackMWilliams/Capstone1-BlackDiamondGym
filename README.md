@@ -44,8 +44,11 @@ All application data — including users, memberships, and transactions — are 
 ## 🗃️ Data Storage Format
 
 All transactions are stored in `transactions.csv` with the following structure:
+
 date|time|type|description|vendor|amount
+
 2025-10-16|17:10:08|DEPOSIT|Membership Payment|Stripe|79.99
+
 2025-10-17|09:25:31|PAYMENT|Equipment Repair|Rogue Fitness|-450.00
 
 ---
