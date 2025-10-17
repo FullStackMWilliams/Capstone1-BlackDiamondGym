@@ -68,7 +68,9 @@ This demonstrates how **conditional logic and class composition** can be combine
 
 ---
 
-## 👑 Interesting Code – Admin Dashboard
+## 👑 Interesting Code 
+
+# Admin Dashboard
 
 Below is one of the most crucial parts of the system: the **Admin Dashboard**.  
 It demonstrates advanced CLI control flow, modular design, and dynamic navigation.
