@@ -418,42 +418,31 @@ public class BlackDiamondGym {
 
 
     //      TABLE DISPLAY
-
     private static void showTransactions(List<Transaction> list) {
         clear();
 
-        // Newest first by date then time
-        list.sort(Comparator
-                .comparing(Transaction::getDate)
-                .thenComparing(Transaction::getTime)
-                .reversed());
+        // Print header with fixed column widths
+        System.out.println(Gray + "=========================================================================================================================");
+        System.out.printf("%-12s %-12s %-12s %-15s %-25s %-30s%n",
+                "📅 Date", "⏰ Time", "📂 Type", "💲 Amount", "🏢 Vendor", "📝 Description");
+        System.out.println(Gray + "=========================================================================================================================");
 
-        // Header
-        System.out.println(Gray + "========================================================================================================" + RESET);
-        System.out.printf(
-                BLACK_BOLD + "%-" + W_DATE + "s %-" + W_TIME + "s %-" + W_TYPE + "s %-" + W_AMT + "s %-" + W_VENDOR + "s %-" + W_DESC + "s%n" + RESET,
-                "📅 Date", "⏰ Time", "📂 Type", "💵 Amount", "🏢 Vendor", "📝 Description"
-        );
-        System.out.println(Gray + "--------------------------------------------------------------------------------------------------------" + RESET);
-
-        // Rows (truncate, then pad -> color only the amount)
         for (Transaction t : list) {
-            String date = pad(trunc(safe(t.getDate())), W_DATE);
-            String time = pad(trunc(safe(t.getTime())), W_TIME);
-            String type = pad(trunc(safe(t.getType())), W_TYPE);
+            // ✅ Format each field consistently
+            String date = String.format("%-12s", t.getDate().toString());
+            String time = String.format("%-12s", t.getTime().toString().substring(0, 8)); // trim milliseconds
+            String type = String.format("%-12s", t.getType());
+            String amountColor = t.getAmount() < 0 ? Red : Green;
+            String amount = String.format("%-15.2f", t.getAmount());
+            String vendor = String.format("%-25.25s", t.getVendor());
+            String description = String.format("%-30.30s", t.getDescription());
 
-            String rawAmount = String.format("$%,.2f", t.getAmount());            // build first
-            String amtPadded = pad(trunc(rawAmount), W_AMT);                      // pad without color
-            String amtColored = (t.getAmount() < 0 ? Red : Green) + amtPadded + RESET;
-
-            String vendor = pad(trunc(safe(t.getVendor()), W_VENDOR), W_VENDOR);  // max W_VENDOR
-            String desc   = pad(trunc(safe(t.getDescription()), W_DESC), W_DESC); // max W_DESC
-
-            System.out.printf("%s %s %s %s %s %s%n",
-                    date, time, type, amtColored, vendor, desc);
+            // ✅ Consistent row spacing
+            System.out.printf("%-12s %-12s %-12s %s%-15s%s %-25s %-30s%n",
+                    date, time, type, amountColor, amount, RESET, vendor, description);
         }
 
-        System.out.println(Gray + "========================================================================================================" + RESET);
+        System.out.println(Gray + "=========================================================================================================================");
         pause();
     }
 
