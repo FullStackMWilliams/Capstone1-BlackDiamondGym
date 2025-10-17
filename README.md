@@ -71,6 +71,7 @@ It’s a practical simulation of how gyms or subscription-based businesses manag
 ---
 
 ## 💡 Interesting Code
+
 private static void adminDashboard(Admin admin) {
     while (true) {
         clear();
@@ -81,18 +82,9 @@ private static void adminDashboard(Admin admin) {
         println(null, "[2] 📊 View Reports (Ledger)");
         println(null, "[3] 📈 App Info (Members/Revenue)");
         println(null, "[4] 🚪 Logout");
-
-        String choice = prompt(Purple + "👉 Choose: " + RESET);
-        switch (choice) {
-            case "1" -> ledgerMenu();   // Record income & expenses
-            case "2" -> reportsMenu();  // Generate time-based and vendor reports
-            case "3" -> appInfo();      // View membership & revenue data
-            case "4" -> { return; }     // Exit dashboard
-            default -> printlnWarn("⚠️ Invalid option.");
-        }
     }
-}
-
+ }   
+    
 ---
 
 ## 🏁 Final Notes
