@@ -1,77 +1,76 @@
 # 🏋️‍♂️ BlackDiamondGym CLI Application
 
-**BlackDiamondGym** is a full-featured Java command-line application that simulates a fitness club management system — complete with membership handling, payment tracking, financial reporting, and admin controls. Designed as a capstone-style project, it demonstrates key Java concepts while mimicking real-world business logic.
+## 📘 Overview
+
+**BlackDiamondGym** is a fully interactive **Java CLI application** that simulates a gym membership and accounting system.  
+It is designed to help users explore Java fundamentals like **OOP, file I/O, collections, date/time APIs, exception handling, and formatting** while building a realistic, real-world project.
+
+The system supports two primary user types:
+- 👤 **Members:** Can create accounts, manage memberships, and view their services.
+- 👑 **Admins:** Can record financial transactions, view reports, and analyze gym data.
+
+All application data — including users, memberships, and transactions — are stored in CSV files, making it easy to persist data without databases.
 
 ---
 
-## 📋 Table of Contents
-- [✨ Overview](#-overview)
-- [📦 Features](#-features)
-- [🧰 Technologies Used](#-technologies-used)
-- [📂 Application Structure](#-application-structure)
-- [📊 Admin Dashboard (Interesting Code)](#-admin-dashboard-interesting-code)
-- [💡 Bonus: Member Features Explained](#-bonus-member-features-explained)
+## 🧭 Features
 
-
----
-
-## ✨ Overview
-
-BlackDiamondGym is designed to be both **beginner-friendly** and **production-ready**, demonstrating core programming skills such as:
-- File I/O (CSV persistence)
-- Class modeling and inheritance
-- Menu-driven CLI navigation
-- Date and time formatting
-- Report generation and filtering
-- Role-based access control (Admin vs. Member)
-
-It’s a practical simulation of how gyms or subscription-based businesses manage users, payments, and operations — all from the command line.
+### 🏠 Home Screen
+- 🔑 **Login** – Securely log into your account.
+- 📝 **Sign Up** – Create a new membership and select add-ons.
+- 📊 **Ledger Menu** – Add deposits, record payments, and view transactions.
+- 📅 **Reports Menu** – Generate financial summaries and search transactions.
+- ❌ **Exit** – Close the application.
 
 ---
 
-## 📦 Features
-
-### 👤 Member Functionality
-- 🧑‍💻 **Sign Up / Login** — Create an account and manage your profile.  
-- 📦 **Membership Plans** — Choose from `BASIC`, `PREMIUM`, or `VIP`.  
-- ➕ **Add Amenities** — Add services like towel service, personal trainer, pool, or sauna.  
-- ❌ **Cancel Membership** — Cancel your plan anytime.  
-- 💰 **Automatic Transactions** — New memberships and add-ons generate deposit records.
-
-### 👑 Admin Functionality
-- 💵 **Sales & Purchases** — Record deposits and payments.  
-- 📊 **Ledger System** — View transactions, filter by type, or generate time-based reports.  
-- 📈 **Reports** — Run Month-to-Date, Previous Month, Year-to-Date, Previous Year, Vendor Search, and Date Range reports.  
-- 🧾 **CSV Persistence** — All transactions are saved in a `transactions.csv` file.
+### 👤 Member Dashboard
+- 🧾 View current membership plan and add-ons.
+- ➕ Add additional amenities.
+- ❌ Cancel membership.
+- 🚪 Log out safely.
 
 ---
 
-## 🧰 Technologies Used
-
-- ☕ **Java 17+**  
-- 📂 CSV File Storage (No external database required)  
-- 🛠️ IntelliJ IDEA or VS Code  
-- 🧪 JUnit (Optional for testing)  
-
----
-
-## 👷‍♂️ App Structure
-📁 src/com/pluralsight/
-│
-├─ BlackDiamondGym.java     # Main application & CLI menus
-├─ Admin.java               # Admin class (inherits from User)
-├─ Member.java              # Member class (inherits from User)
-├─ User.java                # Base user class
-├─ Membership.java          # Membership plan & pricing logic
-├─ Transaction.java         # Transaction model
-├─ Ledger.java              # Reporting and filtering engine
-├─ FileManager.java         # CSV read/write operations
-└─ Colors.java              # ANSI color palette for CLI UI
+### 👑 Admin Dashboard
+- 💵 Record deposits (income) and payments (expenses).
+- 📈 View ledger of all transactions (newest first).
+- 🔍 Filter transactions by deposits, payments, or vendor.
+- 📅 Run financial reports (Month-to-Date, Previous Month, YTD, etc.).
+- 📊 View gym metrics such as active members and revenue.
 
 ---
 
-## 💡 Interesting Code
+## 🗃️ Data Storage Format
 
+All transactions are stored in `transactions.csv` with the following structure:
+date|time|type|description|vendor|amount
+2025-10-16|17:10:08|DEPOSIT|Membership Payment|Stripe|79.99
+2025-10-17|09:25:31|PAYMENT|Equipment Repair|Rogue Fitness|-450.00
+
+---
+
+
+- **Deposits** are shown in ✅ green.
+- **Payments** are shown in ❌ red.
+
+---
+
+## 🧪 Bonus: Dynamic Member Menu
+
+One of the most engaging features is the **Bonus Member Menu**, which introduces a more personalized user experience.  
+Members can manage their account without needing admin access — from adding amenities to viewing their monthly billing breakdown.
+
+This demonstrates how **conditional logic and class composition** can be combined to provide tailored user experiences based on roles.
+
+---
+
+## 👑 Interesting Code – Admin Dashboard
+
+Below is one of the most crucial parts of the system: the **Admin Dashboard**.  
+It demonstrates advanced CLI control flow, modular design, and dynamic navigation.
+
+```java
 private static void adminDashboard(Admin admin) {
     while (true) {
         clear();
@@ -82,9 +81,18 @@ private static void adminDashboard(Admin admin) {
         println(null, "[2] 📊 View Reports (Ledger)");
         println(null, "[3] 📈 App Info (Members/Revenue)");
         println(null, "[4] 🚪 Logout");
+
+        String choice = prompt(Purple + "👉 Choose: " + RESET);
+        switch (choice) {
+            case "1" -> ledgerMenu();
+            case "2" -> reportsMenu();
+            case "3" -> appInfo();
+            case "4" -> { return; }
+            default -> printlnWarn("⚠️ Invalid option.");
+        }
     }
- }   
-    
+}
+
 ---
 
 ## 🏁 Final Notes
