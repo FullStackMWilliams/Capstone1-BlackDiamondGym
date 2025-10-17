@@ -440,10 +440,10 @@ public class BlackDiamondGym {
         clear();
 
         // 📊 Print header
-        System.out.println(Gray + "====================================================================================");
+        System.out.println(Gray + "=========================================================================================================================");
         System.out.printf("%-15s %-10s %-12s %-15s %-30s %-20s%n",
                 "📅 Date", "⏰ Time", "📂 Type", "💲 Amount", "🏢 Vendor", "📝 Description");
-        System.out.println(Gray + "====================================================================================");
+        System.out.println(Gray + "=========================================================================================================================");
 
         for (Transaction t : list) {
             // Format each field with fixed width
@@ -461,7 +461,7 @@ public class BlackDiamondGym {
                     date, time, type, amountColor, amount, RESET, vendor, description);
         }
 
-        System.out.println(Gray + "====================================================================================");
+        System.out.println(Gray + "=========================================================================================================================");
         pause();
     }
 
@@ -505,7 +505,7 @@ public class BlackDiamondGym {
                 }
                 case "7" -> showTransactions(ledger.all());
                 case "8" -> { return; }
-                default -> printlnWarn("⚠️ Invalid option.");
+                default -> printlnWarn(" Invalid option.");
             }
         }
     }
