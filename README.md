@@ -1,43 +1,48 @@
-# Capstone1-BlackDiamondGym
-
-# 🏋️‍♂️ BlackDiamondGym CLI Application
-
-**BlackDiamondGym** is a Java CLI (Command-Line Interface) application designed as a comprehensive capstone project that simulates a real-world gym management system. The project covers fundamental and intermediate Java concepts including OOP, file I/O, CSV handling, date/time formatting, collections, conditionals, loops, and user authentication.
-
----
-
-## 📚 Project Overview
-
-This project is structured to simulate how a real gym would manage **memberships, sales, ledger accounting, and admin operations**. Users interact with the system through a text-based menu system with color-themed screens and logical navigation.
-
-The system includes two types of users:
-- 👤 **Members** — can sign up, log in, manage memberships, add amenities, and view their plans.
-- 🛠️ **Admins** — can log in to access sales data, transaction history, manage the accounting ledger, and view business performance.
-
----
-
-## ✨ Key Features
-
-### 🔐 Authentication
-- Member and Admin login system with credential storage in `users.csv`.
-- Ability to sign up as a new member with custom username and password.
-
-### 🏃‍♂️ Member Features
-- Sign up for new memberships with **3 base plans** and **5 optional add-ons**.
-- View or cancel current membership.
-- Add new amenities (e.g., personal trainer, sauna, pool, towel service, classes).
-- View membership details in a friendly, color-coded dashboard.
-
-### 🧰 Admin Features
-- Access the accounting ledger and sales dashboard.
-- View, add, or remove transactions stored in `transactions.csv`.
-- Generate financial summaries and reports.
-- View all active memberships and revenue streams.
-
-### 💾 CSV Storage
-All key data is stored in CSV format for transparency and simplicity:
-- `users.csv` – user credentials and roles
-- `transactions.csv` – all financial transactions in the format:
+🏋️‍♂️ BlackDiamondGym — CLI Fitness Management App
+📦 Tech Stack & Requirements
+Language: Java 17+
+IDE: IntelliJ IDEA or any Java-compatible IDE
+Build Tool: No external build tools required (standard javac and java commands work)
+Data Storage: CSV files (users.csv, membership.csv, transactions.csv)
+Libraries:
+☕ Standard Java SE Libraries
+📅 java.time for date/time handling
+📂 java.io for CSV I/O operations
+🧰 java.util for collections and user input
+📘 Overview
+BlackDiamondGym is a command-line fitness management system designed to manage memberships, transactions, and administrative operations for a gym. It provides two distinct user experiences:
+👤 Members — Can view and manage their memberships, add amenities, or cancel services.
+👑 Admins — Can manage transactions, generate reports, and track revenue.
+All data is stored in CSV files and updated in real time. The app is designed for simplicity, scalability, and reliability — making it an excellent foundation for future expansion (like database integration or GUI).
+🏠 Home Screen Menu
+Upon launch, users are greeted with a simple interactive menu:
+Option	Action
+D	➕ Add Deposit — Record income transactions
+P	💸 Make Payment — Record expense transactions
+L	📊 Ledger — View all financial records
+B	👤 Bonus Member Menu — Exclusive member tools
+X	🚪 Exit — Close the application
+📊 Ledger Features
+The Ledger is the heart of BlackDiamondGym’s accounting system. All transactions are displayed newest-first and can be filtered with a single key press:
+A) All Transactions — Shows every record
+D) Deposits — Displays only income transactions
+P) Payments — Displays only expenses
+📑 Reports & Insights
+The reporting module allows admins to generate detailed views of financial activity:
+Report	Description
+1) Month-to-Date	Transactions from the current month
+2) Previous Month	Transactions from the previous month
+3) Year-to-Date	All transactions this year
+4) Previous Year	All transactions from last year
+5) Search by Vendor	Search transactions by vendor name
+0) Back	Return to the Ledger screen
+👤 Bonus Member Menu — A Dynamic Feature
+💡 Why it’s interesting:
+This menu showcases dynamic state management, financial integration, and real-time data updates — all from a single user action.
+🔧 Member Options:
+➕ Add Amenities: Members can customize their plans (e.g., pool, personal trainer, sauna). The system recalculates their total cost and records a new transaction in the ledger.
+❌ Cancel Membership: Instantly deactivate an account. The status updates in both the membership and ledger systems, ensuring accurate reporting.
+📈 Auto-Billing Integration: Every change (new amenity, cancellation, etc.) automatically writes a new line to the CSV file, preserving a full financial audit trail.
 
 <img width="1919" height="1125" alt="Screenshot 2025-10-17 010934" src="https://github.com/user-attachments/assets/30a0391f-dc78-43b2-b373-4d2402a87e97" />
 
