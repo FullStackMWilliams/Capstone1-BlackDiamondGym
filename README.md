@@ -68,34 +68,69 @@ This demonstrates how **conditional logic and class composition** can be combine
 
 ---
 
-## 👑 Interesting Code – Admin Dashboard
+## 👑 Interesting Code 
+
+# Admin Dashboard
 
 Below is one of the most crucial parts of the system: the **Admin Dashboard**.  
 It demonstrates advanced CLI control flow, modular design, and dynamic navigation.
 
 ```java
-private static void adminDashboard(Admin admin) {
-    while (true) {
-        clear();
-        println(DeepBlue, "==================== 👑 ADMIN DASHBOARD =======================");
-        println(BeigeBackground, "👤 User: " + admin.getUsername());
-        println(BeigeBackground, "------------------------------------------------------");
-        println(null, "[1] 💵 Sales & Purchases");
-        println(null, "[2] 📊 View Reports (Ledger)");
-        println(null, "[3] 📈 App Info (Members/Revenue)");
-        println(null, "[4] 🚪 Logout");
+    private static void adminDashboard(Admin admin) {
+        while (true) {
+            clear();
+            println(DeepBlue, "==================== 👑 ADMIN DASHBOARD =======================");
+            println(BeigeBackground, "👤 User: " + admin.getUsername());
+            println(BeigeBackground, "------------------------------------------------------");
+            System.out.println("[1] 💵 Sales & Purchases (Record deposit/payment)");
+            System.out.println("[2] 📊 View Reports (Ledger)");
+            System.out.println("[3] 📈 App Info (Members/Revenue)");
+            System.out.println("[4] 🔙 Logout");
 
-        String choice = prompt(Purple + "👉 Choose: " + RESET);
-        switch (choice) {
-            case "1" -> ledgerMenu();
-            case "2" -> reportsMenu();
-            case "3" -> appInfo();
-            case "4" -> { return; }
-            default -> printlnWarn("⚠️ Invalid option.");
+            String choice = prompt(Purple + "👉 Choose: " + RESET);
+            switch (choice) {
+                case "1" -> adminLedgerMenu();
+                case "2" -> reportsMenu();
+                case "3" -> appInfo();
+                case "4" -> { return; }
+                default -> printlnWarn("Invalid option.");
+            }
         }
     }
-}
+
 ````
+# Admin Ledger Menu
+
+After admin select [1] Sales and Purchases they are then brought to the admin ledger menu. 
+I find this block of code also intersting as we learn more about OOP.
+
+```java
+    private static void adminLedgerMenu() {
+        while (true) {
+            clear();
+            println(DeepBlue, "========================== 📁 LEDGER / ACCOUNTING ===================");
+            println(null, "[1] 💰 Record Deposit (Income)");
+            println(null, "[2] 🧾 Record Payment (Expenses)");
+            println(null, "[3] 📜 View All Transactions");
+            println(null, "[4] 📈 View Deposits Only");
+            println(null, "[5] 💸 View Payments Only");
+            println(null, "[6] 🔙 Back");
+
+            String c = prompt(BeigeBackground + "👉 Choose: " + RESET);
+            switch (c) {
+                case "1" -> recordDeposit();
+                case "2" -> recordPayment(); // ✅ This must call recordPayment()
+                case "3" -> showTransactions(ledger.all());
+                case "4" -> showTransactions(ledger.deposits());
+                case "5" -> showTransactions(ledger.payments());
+                case "6" -> { return; }
+                default -> printlnWarn("⚠️ Invalid option.");
+            }
+        }
+    }
+
+
+```
 ---
 ## 🏁 Final Notes
 
