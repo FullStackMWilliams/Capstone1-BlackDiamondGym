@@ -19,7 +19,9 @@
 2025-10-17|15:27:17|PAYMENT|test1|test1|-100.00
 2025-10-17|16:05:16|PAYMENT|test|test|-900.00
 2025-10-17|16:09:10|PAYMENT|test|test|-800.00
-2025-10-17|16:53:46|DEPOSIT|testadmindash|test|100.00
-2025-10-17|16:54:15|PAYMENT|testadmidash|test|-100.00
+2025-10-17|16:53:46|DEPOSIT|test admin dash|test|100.00
+2025-10-17|16:54:15|PAYMENT|test admin dash|test|-100.00
 2025-10-17|17:28:10|PAYMENT|test|test|-100.00
 2025-10-17|18:07:14|DEPOSIT|test|test|9000.00
+2025-10-17|18:41:45|DEPOSIT|Personal trainer|24Hour Fitness|200.00
+2025-10-17|18:43:27|PAYMENT|Personal Trainer|24 Hour Fitness|-25.00

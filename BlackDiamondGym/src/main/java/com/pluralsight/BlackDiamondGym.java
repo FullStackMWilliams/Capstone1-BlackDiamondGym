@@ -1,7 +1,6 @@
 package com.pluralsight;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 import java.util.*;
 import static com.pluralsight.Colors.*;
 
@@ -15,13 +14,6 @@ public class BlackDiamondGym {
     private static List<User> users = new ArrayList<>();
     private static List<Membership> memberships = new ArrayList<>();
 
-    // Column widths (tweak if needed)
-    private static final int W_DATE = 12;
-    private static final int W_TIME = 10;
-    private static final int W_TYPE = 10;
-    private static final int W_AMT  = 15;
-    private static final int W_VENDOR = 28;
-    private static final int W_DESC   = 28;
 
     public static void main(String[] args) {
         // Ensure files exist and load data
@@ -395,33 +387,102 @@ public class BlackDiamondGym {
 
     private static void recordDeposit() {
         clear();
-        println(Green, "💰 Add Deposit");
-        double amt = parseDouble(prompt("Amount ($): "));
-        String desc = prompt("Description: ");
-        String vendor = prompt("Vendor: ");
+        println(Green, "💰 Record Deposit (Income)");
+
+        // 🔁 Validate amount
+        double amt = 0.0;
+        while (true) {
+            String input = prompt("Amount ($): ");
+            try {
+                amt = Double.parseDouble(input.trim());
+                if (amt <= 0) {
+                    printlnWarn("⚠️ Please enter a positive amount for a deposit.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                printlnWarn("⚠️ Invalid number. Please try again.");
+            }
+        }
+
+        // 🔁 Validate description
+        String desc;
+        while (true) {
+            desc = prompt("Description: ").trim();
+            if (desc.isEmpty()) {
+                printlnWarn("⚠️ Description cannot be empty. Please enter a valid description.");
+            } else {
+                break;
+            }
+        }
+
+        // 🔁 Validate vendor
+        String vendor;
+        while (true) {
+            vendor = prompt("Vendor: ").trim();
+            if (vendor.isEmpty()) {
+                printlnWarn("⚠️ Vendor cannot be empty. Please enter a valid vendor name.");
+            } else {
+                break;
+            }
+        }
 
         ledger.addDeposit(Math.abs(amt), desc, vendor);
         FileManager.writeTransactions(ledger.getTransactions());
-        printlnSuccess("Deposit recorded.");
+        printlnSuccess("✅ Deposit recorded successfully.");
         pause();
     }
+
+
     private static void recordPayment() {
         clear();
         println(Red, "💸 Make Payment (Debit)");
-        double amt = parseDouble(prompt("Amount ($): "));
-        String desc = prompt("Description: ");
-        String vendor = prompt("Vendor: ");
 
-        // ✅ Ensure payment is always negative
-        if (amt > 0) {
-            amt = -amt;
+        // 🔁 Validate amount
+        double amt = 0.0;
+        while (true) {
+            String input = prompt("Amount ($): ");
+            try {
+                amt = Double.parseDouble(input.trim());
+                if (amt <= 0) {
+                    printlnWarn("⚠️ Please enter a positive amount (it will be stored as negative).");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                printlnWarn("⚠️ Invalid number. Please try again.");
+            }
+        }
+        amt = -Math.abs(amt); // Always store as negative
+
+        // 🔁 Validate description
+        String desc;
+        while (true) {
+            desc = prompt("Description: ").trim();
+            if (desc.isEmpty()) {
+                printlnWarn("⚠️ Description cannot be empty. Please enter a valid description.");
+            } else {
+                break;
+            }
+        }
+
+        // 🔁 Validate vendor
+        String vendor;
+        while (true) {
+            vendor = prompt("Vendor: ").trim();
+            if (vendor.isEmpty()) {
+                printlnWarn("⚠️ Vendor cannot be empty. Please enter a valid vendor name.");
+            } else {
+                break;
+            }
         }
 
         ledger.addPayment(amt, desc, vendor);
         FileManager.writeTransactions(ledger.getTransactions());
-        printlnSuccess("Payment recorded.");
+        printlnSuccess("✅ Payment recorded successfully.");
         pause();
     }
+
 
     private static void appInfo() {
         clear();
@@ -473,7 +534,7 @@ public class BlackDiamondGym {
     //         UTILITIES/HELPER METHODS
     private static String prompt(String msg) {
         System.out.print(msg);
-        return in.nextLine();
+        return in.nextLine().trim(); // ✨ Always trims whitespace automatically
     }
     private static void println(String color, String s) {
         if (color == null) System.out.println(s);
@@ -489,20 +550,5 @@ public class BlackDiamondGym {
     private static void pause() {
         System.out.println(OceanBlue + "\n🔄 Press ENTER to continue..." + RESET);
         in.nextLine();
-    }
-    private static double parseDouble(String input) {
-        try { return Double.parseDouble(input.trim()); }
-        catch (Exception e) { printlnWarn("Invalid number. Using 0.0"); return 0.0; }
-    }
-
-    // ---------- Formatting helpers (truncate THEN pad) ----------
-    private static String safe(Object o) { return (o == null) ? "" : o.toString(); }
-    private static String trunc(String s) { return s == null ? "" : s; } // generic
-    private static String trunc(String s, int max) {
-        if (s == null) return "";
-        return s.length() <= max ? s : s.substring(0, Math.max(0, max - 3)) + "...";
-    }
-    private static String pad(String s, int width) {
-        return String.format("%-" + width + "s", s == null ? "" : s);
     }
 }
