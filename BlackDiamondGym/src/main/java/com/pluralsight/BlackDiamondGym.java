@@ -184,7 +184,7 @@ public class BlackDiamondGym {
         println(null, "📦 Plan: " + plan);
         println(null, "🧰 Add-ons: " + (addOns.isEmpty() ? "None" : addOns));
         println(null, "💵 Monthly Total: $" + String.format("%.2f", newMembership.getTotalPrice()));
-        println(BeigeBackground, "\n✅ Your account has been created. Please login from the Home menu (M).");
+        println(BeigeBackground, "\n✅ Your account has been created. Please login from the Home menu [1].");
         pause();
     }
 
